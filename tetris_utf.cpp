@@ -420,16 +420,16 @@ int strike_check(int shape, int angle, int x, int y)
 		{
 			if (((x + j) == 0) || ((x + j) == 13))
 				block_dat = 1;
-			else // 여기수정
+			else 
 			{
-				//if (y + i < 0 || x + j < 0)
-					//block_dat = 0;
-				//else
+				if (y + i < 0 || x + j < 0)
+					block_dat = 0;
+				else
 					block_dat = total_block[y + i][x + j];
 			}
 
 
-			if ((block_dat == 1) && (block[shape][angle][i][j] == 1))																							//좌측벽의 좌표를 빼기위함
+			if ((block_dat == 1) && (block[shape][angle][i][j] == 1))
 			{
 				return 1;
 			}
@@ -638,7 +638,7 @@ int input_data()
 		scanf_s("%d", &i);
 	}
 
-	score = 0; // 여기 수정
+	score = 0;
 
 	level = i - 1;
 	system("cls");
