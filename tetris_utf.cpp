@@ -255,7 +255,7 @@ int init()
 
 	stage_data[0].speed = 40;
 	stage_data[0].stick_rate = 20;
-	stage_data[0].clear_line = 1;
+	stage_data[0].clear_line = 20;
 	stage_data[1].speed = 38;
 	stage_data[1].stick_rate = 18;
 	stage_data[1].clear_line = 20;
@@ -420,16 +420,16 @@ int strike_check(int shape, int angle, int x, int y)
 		{
 			if (((x + j) == 0) || ((x + j) == 13))
 				block_dat = 1;
-			else // 여기수정
+			else 
 			{
-				//if (y + i < 0 || x + j < 0)
-					//block_dat = 0;
-				//else
+				if (y + i < 0 || x + j < 0)
+					block_dat = 0;
+				else
 					block_dat = total_block[y + i][x + j];
 			}
 
 
-			if ((block_dat == 1) && (block[shape][angle][i][j] == 1))																							//좌측벽의 좌표를 빼기위함
+			if ((block_dat == 1) && (block[shape][angle][i][j] == 1))
 			{
 				return 1;
 			}
@@ -632,13 +632,12 @@ int input_data()
 
 	while (i < 1 || i>8)
 	{
-		i = -1;
 		gotoxy(10, 3);
 		printf("Select Start level[1-8]:       \b\b\b\b\b\b\b");
 		scanf_s("%d", &i);
 	}
 
-	score = 0; // 여기 수정
+	score = 0;
 
 	level = i - 1;
 	system("cls");
