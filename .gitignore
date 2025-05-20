@@ -1,0 +1,52 @@
+﻿# ---- macOS 시스템 파일 ----
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Spotlight 검색 파일
+.Spotlight-V100
+.Trashes
+
+# Icon?
+Icon
+
+# macOS ._* resource fork files
+._*
+
+# ---- VSCode 설정 파일 ----
+.vscode/
+*.code-workspace
+
+# ---- CMake 빌드 아티팩트 ----
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+build/
+build-*/
+
+# Ninja 빌드 시스템
+.ninja_log
+.ninja_deps
+
+# ---- 컴파일 아티팩트 ----
+*.o
+*.obj
+*.so
+*.dll
+*.dylib
+*.exe
+*.out
+*.a
+*.lib
+
+# ---- 바이너리 및 실행 파일 ----
+*.bin
+*.elf
+
+# ---- 백업/임시 파일 ----
+*~
+*.swp
+*.tmp
+*.bak
+*.old
+*.orig
