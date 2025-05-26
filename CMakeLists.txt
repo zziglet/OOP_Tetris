@@ -7,6 +7,7 @@ include_directories(
 	blocks/base
 	blocks/normal
 	blocks/special
+	brick
 	board
 	core
 	domain
@@ -17,6 +18,7 @@ include_directories(
 file(GLOB_RECURSE SOURCES
 	main.cpp
 	blocks/**/*.cpp
+	brick/*.cpp
 	board/*.cpp
 	core/*.cpp
 	domain/*.cpp
