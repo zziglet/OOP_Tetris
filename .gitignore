@@ -16,13 +16,31 @@ Icon
 # ---- VSCode 설정 파일 ----
 .vscode/
 *.code-workspace
+*.vc.db
+*.vc.db-shm
+*.vc.db-wal
+*.vc.opendb
+*.slnx.sqlite
 
-# ---- CMake 빌드 아티팩트 ----
+# CMake
+build/
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
-build/
-build-*/
+
+# Visual Studio
+.vscode/
+*.vcxproj*
+*.sln
+*.user
+*.opensdf
+*.sdf
+*.ipch
+*.obj
+*.pdb
+*.log
+*.tlog
+*.pch
 
 # Ninja 빌드 시스템
 .ninja_log
