@@ -16,6 +16,11 @@ Icon
 # ---- VSCode 설정 파일 ----
 .vscode/
 *.code-workspace
+*.vc.db
+*.vc.db-shm
+*.vc.db-wal
+*.vc.opendb
+*.slnx.sqlite
 
 # CMake
 build/
