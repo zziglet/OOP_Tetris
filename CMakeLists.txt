@@ -4,9 +4,7 @@ project(OOP_Tetris)
 set(CMAKE_CXX_STANDARD 17)
 
 include_directories(
-	blocks/base
-	blocks/normal
-	blocks/special
+	block
 	brick
 	board
 	core
@@ -17,7 +15,7 @@ include_directories(
 
 file(GLOB_RECURSE SOURCES
 	main.cpp
-	blocks/**/*.cpp
+	block/*.cpp
 	brick/*.cpp
 	board/*.cpp
 	core/*.cpp
