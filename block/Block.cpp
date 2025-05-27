@@ -285,6 +285,11 @@ BrickEnum Block::getBrick(int r, int c)
     return this->shape[spinCnt][r][c] ? this->brickType : BrickEnum::EmptyBrick;
 }
 
+BrickEnum Block::getBrickType()
+{
+    return this->brickType;
+}
+
 void Block::spin()
 {
     this->spinCnt = (this->spinCnt + 1) % 4;

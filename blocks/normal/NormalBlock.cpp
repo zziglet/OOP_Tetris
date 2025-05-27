@@ -1,1 +1,0 @@
-// NormalBlock.cpp

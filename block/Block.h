@@ -17,5 +17,6 @@ protected:
 public:
     Block(BrickEnum brickType, int r, int c);
     BrickEnum getBrick(int r, int c);
+    BrickEnum getBrickType();
     void spin();
 };
