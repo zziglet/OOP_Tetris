@@ -11,5 +11,6 @@ enum class BrickEnum{
     SBrick,
     BombBrick,
     EnergyBrick,
-    EmptyBrick
+    EmptyBrick,
+    WallBrick
 };
