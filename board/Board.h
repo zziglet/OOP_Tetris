@@ -12,6 +12,7 @@ private:
     Block* currentBlock;
 
     void mergeBlock();
+    bool canMove(int r, int c, int spin);
     void triggerEnergyCore(int startRow, int endRow);
     void triggerBomb();
 
