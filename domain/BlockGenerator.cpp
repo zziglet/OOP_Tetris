@@ -12,7 +12,7 @@ BlockGenerator::BlockGenerator(Stage stage) :
 	srand(unsigned(time(NULL)));
 }
 
-Block BlockGenerator::getNextBlock(int currScore, int currTurn) const
+Block* BlockGenerator::getNextBlock(int currScore, int currTurn) const
 {
 	int bombRate, energyRate;
 
@@ -33,14 +33,14 @@ Block BlockGenerator::getNextBlock(int currScore, int currTurn) const
 	//int A = rand() % 100;
 	if (rand() % 100 < bombRate) {
 		//cout << "A : " << A << endl;
-		return Block(BrickEnum::BombBrick,0,0);
+		return new Block(BrickEnum::BombBrick,0,0);
 	}
 	//int B = rand() % 100;
 	if ( rand() % 100< energyRate) {
 		//cout << "B : " << B << endl;
-		return Block(BrickEnum::EnergyBrick, 0, 0);
+		return new Block(BrickEnum::EnergyBrick, 0, 0);
 	}
 
-	return Block(bricks[rand() % (sizeof(bricks) / sizeof(bricks[0]))], 0, 0);
+	return new Block(bricks[rand() % (sizeof(bricks) / sizeof(bricks[0]))], 0, 0);
 
 }

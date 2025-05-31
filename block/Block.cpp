@@ -2,7 +2,7 @@
 #include "Block.h"
 
 Block::Block(BrickEnum brickType, int r, int c) :
-    brickType(brickType), r(r), c(c)
+    brickType(brickType), r(r), c(c),spinCnt(0)
 {
 
     if (brickType == BrickEnum::BombBrick) {
@@ -32,7 +32,7 @@ Block::Block(BrickEnum brickType, int r, int c) :
         for (int i = 0; i < 4; i++)
             for (int j = 0; j < 4; j++)
                 for (int k = 0; k < 4; k++)
-                    shape[i][j][k] = temp[i][j][k];
+                    shape[i][j][k] = temp[i][j][k] == 0 ? BrickEnum::EmptyBrick : brickType;
 
     }
 
@@ -63,7 +63,7 @@ Block::Block(BrickEnum brickType, int r, int c) :
         for (int i = 0; i < 4; i++)
             for (int j = 0; j < 4; j++)
                 for (int k = 0; k < 4; k++)
-                    shape[i][j][k] = temp[i][j][k];
+                    shape[i][j][k] = temp[i][j][k] == 0 ? BrickEnum::EmptyBrick : brickType;
 
     }
 
@@ -93,7 +93,7 @@ Block::Block(BrickEnum brickType, int r, int c) :
         for (int i = 0; i < 4; i++)
             for (int j = 0; j < 4; j++)
                 for (int k = 0; k < 4; k++)
-                    shape[i][j][k] = temp[i][j][k];
+                    shape[i][j][k] = temp[i][j][k] == 0 ? BrickEnum::EmptyBrick : brickType;
     }
 
     else if (brickType == BrickEnum::LBrick) {
@@ -124,7 +124,7 @@ Block::Block(BrickEnum brickType, int r, int c) :
         for (int i = 0; i < 4; i++)
             for (int j = 0; j < 4; j++)
                 for (int k = 0; k < 4; k++)
-                    shape[i][j][k] = temp[i][j][k];
+                    shape[i][j][k] = temp[i][j][k] == 0 ? BrickEnum::EmptyBrick : brickType;
 
     }
 
@@ -154,7 +154,7 @@ Block::Block(BrickEnum brickType, int r, int c) :
         for (int i = 0; i < 4; i++)
             for (int j = 0; j < 4; j++)
                 for (int k = 0; k < 4; k++)
-                    shape[i][j][k] = temp[i][j][k];
+                    shape[i][j][k] = temp[i][j][k] == 0 ? BrickEnum::EmptyBrick : brickType;
     }
 
     else if (brickType == BrickEnum::SBrick) {
@@ -183,7 +183,7 @@ Block::Block(BrickEnum brickType, int r, int c) :
         for (int i = 0; i < 4; i++)
             for (int j = 0; j < 4; j++)
                 for (int k = 0; k < 4; k++)
-                    shape[i][j][k] = temp[i][j][k];
+                    shape[i][j][k] = temp[i][j][k] == 0 ? BrickEnum::EmptyBrick : brickType;
     }
 
     else if (brickType == BrickEnum::TBrick) {
@@ -212,7 +212,7 @@ Block::Block(BrickEnum brickType, int r, int c) :
         for (int i = 0; i < 4; i++)
             for (int j = 0; j < 4; j++)
                 for (int k = 0; k < 4; k++)
-                    shape[i][j][k] = temp[i][j][k];
+                    shape[i][j][k] = temp[i][j][k] == 0 ? BrickEnum::EmptyBrick : brickType;
     }
 
     else if (brickType == BrickEnum::StickBrick) {
@@ -241,7 +241,7 @@ Block::Block(BrickEnum brickType, int r, int c) :
         for (int i = 0; i < 4; i++)
             for (int j = 0; j < 4; j++)
                 for (int k = 0; k < 4; k++)
-                    shape[i][j][k] = temp[i][j][k];
+                    shape[i][j][k] = temp[i][j][k] == 0 ? BrickEnum::EmptyBrick : brickType;
 
     }
 
@@ -271,7 +271,7 @@ Block::Block(BrickEnum brickType, int r, int c) :
         for (int i = 0; i < 4; i++)
             for (int j = 0; j < 4; j++)
                 for (int k = 0; k < 4; k++)
-                    shape[i][j][k] = temp[i][j][k];
+                    shape[i][j][k] = temp[i][j][k] == 0 ? BrickEnum::EmptyBrick : brickType;
 
     }
 
@@ -282,12 +282,17 @@ Block::Block(BrickEnum brickType, int r, int c) :
 
 BrickEnum Block::getBrick(int r, int c)
 {
-    return this->shape[spinCnt][r][c] ? this->brickType : BrickEnum::EmptyBrick;
+    return this->shape[spinCnt][r][c];
 }
 
 BrickEnum Block::getBrickType()
 {
     return this->brickType;
+}
+
+int Block::getSpinCnt()
+{
+    return spinCnt;
 }
 
 void Block::spin()

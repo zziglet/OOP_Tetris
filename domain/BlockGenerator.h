@@ -12,5 +12,5 @@ private:
 
 public:
 	BlockGenerator(Stage stage);
-	Block getNextBlock(int currScore, int currStage) const;
+	Block* getNextBlock(int currScore, int currStage) const;
 };
