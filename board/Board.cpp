@@ -60,7 +60,7 @@ list<int> Board::checkClearedLines() {
 
         if (full) {
 
-            // ÆøÅº Á¦°ÅµÇ´Â °æ¿ì, isBomb¸¦ false·Î º¯°æ
+            // í­íƒ„ ì œê±°ë˜ëŠ” ê²½ìš°, isBombë¥¼ falseë¡œ ë³€ê²½
             for (int j = 0; j < COLS; j++) {
                 if (grid[i][j].getBrickType() == BrickEnum::BombBrick) {
                     isBomb = false;
@@ -132,7 +132,7 @@ void Board::setNextBlock(Block* nextBlock, int currTurn) {
     cout << "spinCnt : " <<  currentBlock->getSpinCnt() << endl;
 
     if (currentBlock->getBrickType() == BrickEnum::BombBrick) {
-        //·£´ıÀ¸·Î ºí·ÏÀ» ¼±ÅÃÇØ¼­, ±×°Ô ÆøÅºÀ¸·Î ÅÍÁö°Ô ÇØ¾ßÇÔ.
+        //ëœë¤ìœ¼ë¡œ ë¸”ë¡ì„ ì„ íƒí•´ì„œ, ê·¸ê²Œ í­íƒ„ìœ¼ë¡œ í„°ì§€ê²Œ í•´ì•¼í•¨.
         isBomb = true;
         bombTurn = currTurn;
 
@@ -157,7 +157,7 @@ void Board::setNextBlock(Block* nextBlock, int currTurn) {
 
         shuffle(temp.begin(), temp.end(), g);
 
-        while (cnt <= temp.size() || cnt == 3) {
+        while (cnt < temp.size() || cnt == 3) {
             pair<int, int> A = temp.at(cnt++);
             grid[A.first][A.second].setIsExplosive(true);
         }
@@ -174,7 +174,7 @@ void Board::moveBlock(KeyEnum key) {
 
     int dr = 0, dc = 0;
 
-    // ¹æÇâ °áÁ¤
+    // ë°©í–¥ ê²°ì •
     switch (key) {
     case KeyEnum::Left:  dc = -1; break;
     case KeyEnum::Right: dc = 1; break;
@@ -185,14 +185,14 @@ void Board::moveBlock(KeyEnum key) {
     int newR = currentBlock->r + dr;
     int newC = currentBlock->c + dc;
 
-    // ÀÌµ¿ °¡´É ¿©ºÎ È®ÀÎ
+    // ì´ë™ ê°€ëŠ¥ ì—¬ë¶€ í™•ì¸
     if (canMove(newR, newC, currentBlock->getSpinCnt())) {
         currentBlock->r = newR;
         currentBlock->c = newC;
         //cout << currentBlock->r << " : " << currentBlock->c << endl;
     }
     else if (key == KeyEnum::Down) {
-        // ¾Æ·¡·Î ÀÌµ¿ ºÒ°¡´ÉÇÏ¸é °íÁ¤
+        // ì•„ë˜ë¡œ ì´ë™ ë¶ˆê°€ëŠ¥í•˜ë©´ ê³ ì •
         //cout << "asdfasdfasdfasdfasdfasdfasdfadsf" << endl;
         mergeBlock();
     }
@@ -214,11 +214,11 @@ bool Board::canMove(int r, int c, int spin) {
                 int newR = r + i;
                 int newC = c + j;
 
-                // ¹üÀ§ Ã¼Å©
+                // ë²”ìœ„ ì²´í¬
                 if (newR < 0 || newR >= ROWS || newC < 0 || newC >= COLS)
                     return false;
 
-                // ÀÌ¹Ì Ã¤¿öÁø ºí·°ÀÌ ÀÖ´Â °æ¿ì
+                // ì´ë¯¸ ì±„ì›Œì§„ ë¸”ëŸ­ì´ ìˆëŠ” ê²½ìš°
                 if (grid[newR][newC].getBrickType() != BrickEnum::EmptyBrick)
                     return false;
             }
