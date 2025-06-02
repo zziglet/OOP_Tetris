@@ -24,22 +24,44 @@ Board::Board() {
     currentBlock = nullptr;
 }
 
+
+// List로 들어온 라인 제거.
 void Board::clearLines(list<int> clearLines)
 {
+    //필요할 수도? 있어서 일단 적어둠
     int return_val = clearLines.size();
+    //위에 줄부터 제거해야하므로 sort()
+    clearLines.sort();
+
 
     while (clearLines.size() != 0) {
-        int now = clearLines.back();
+        int now = clearLines.front();
+        clearLines.pop_front();
+        bool isCheck = false;
 
+        // 폭탄 제거되는 경우, isBomb를 false로 변경
+        for (int j = 0; j < COLS; j++) {
+            if (grid[now][j].getBrickType() == BrickEnum::BombBrick) {
+                isBomb = false;
+            }
+            if (grid[now][j].getBrickType() == BrickEnum::EmptyBrick) {
+                isCheck = true;
+            }
+        }
+
+        // 혹시 지워야하는 라인에 빈 블록이 있다면 continue
+        if (isCheck)
+            continue;
+
+
+        //라인 제거하고 위에 블록 내리는 작업 시행.
         for (int k = now; k > 0; k--) {
             for (int j = 0; j < COLS; j++) {
                 grid[k][j] = grid[k - 1][j];
             }
         }
 
-        clearLines.pop_back();
     }
-
 }
 
 
@@ -60,11 +82,8 @@ list<int> Board::checkClearedLines() {
 
         if (full) {
 
-            // 폭탄 제거되는 경우, isBomb를 false로 변경
+            
             for (int j = 0; j < COLS; j++) {
-                if (grid[i][j].getBrickType() == BrickEnum::BombBrick) {
-                    isBomb = false;
-                }
 
                 if (grid[i][j].getBrickType() == BrickEnum::EnergyBrick) {
                     if(0<= i + 1 && i+1 < ROWS)
@@ -124,12 +143,17 @@ bool Board::isGameOver() {
 
 void Board::setNextBlock(Block* nextBlock, int currTurn) {
 
-    currentBlock = nextBlock;
-    currTurn = currTurn;
 
+    //게임메니져가 릴리즈 안할거면 아래 주석 제거 해야함.
+    //delete currentBlock;
+
+    currentBlock = nextBlock;
+    this->currTurn = currTurn;
+
+    
     triggerBomb(currTurn);
 
-    cout << "spinCnt : " <<  currentBlock->getSpinCnt() << endl;
+    //cout << "spinCnt : " <<  currentBlock->getSpinCnt() << endl;
 
     if (currentBlock->getBrickType() == BrickEnum::BombBrick) {
         //랜덤으로 블록을 선택해서, 그게 폭탄으로 터지게 해야함.
@@ -137,7 +161,7 @@ void Board::setNextBlock(Block* nextBlock, int currTurn) {
         bombTurn = currTurn;
 
         vector<pair<int, int>> temp;
-
+        //터질 블록 후보 선택
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLS; j++) {
 
@@ -154,10 +178,12 @@ void Board::setNextBlock(Block* nextBlock, int currTurn) {
 
         std::random_device rd;
         std::mt19937 g(rd());
-
+        // 후보들 셔플함.
         shuffle(temp.begin(), temp.end(), g);
 
-        while (cnt <= temp.size() || cnt == 3) {
+
+        // 최대 3개까지 터지므로 아래 while로 선택.
+        while (cnt < temp.size() || cnt == 3) {
             pair<int, int> A = temp.at(cnt++);
             grid[A.first][A.second].setIsExplosive(true);
         }
@@ -191,9 +217,9 @@ void Board::moveBlock(KeyEnum key) {
         currentBlock->c = newC;
         //cout << currentBlock->r << " : " << currentBlock->c << endl;
     }
+    // 이 부분 정상작동 할련지 모르겠음 tc해야할듯
     else if (key == KeyEnum::Down) {
         // 아래로 이동 불가능하면 고정
-        //cout << "asdfasdfasdfasdfasdfasdfasdfadsf" << endl;
         mergeBlock();
     }
 
@@ -208,7 +234,7 @@ bool Board::canMove(int r, int c, int spin) {
 
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {   
-            cout << i << " : " << j << spin << endl;
+            //cout << i << " : " << j << spin << endl;
             if (currentBlock->shape[spin][i][j] != BrickEnum::EmptyBrick) {
 
                 int newR = r + i;
@@ -283,6 +309,7 @@ void Board::triggerBomb(int currTurn) {
     }
 }
 
+//디버그용
 void Board::render() {
     for (int i = 0; i < ROWS; i++) {
         for (int j = 0; j < COLS; j++) {

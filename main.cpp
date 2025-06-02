@@ -49,10 +49,6 @@ int main()
 	Block* temp = generator.getNextBlock(currTurn, 0);
 	A.setNextBlock(temp, 0);
 
-	for (int i = 0; i < 20; i++) {
-		A.moveBlock(KeyEnum::Down);
-		printBoard(A);
-	}
 
   return 0;
 }
