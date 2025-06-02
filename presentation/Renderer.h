@@ -1,15 +1,19 @@
-// Renderer.h
+//Renderer.h
 #pragma once
-#include <string>
-#include <vector>
+#include "Board.h"
+#include <iostream>
+#include <thread>
+#include <chrono>
 
 class Renderer {
 public:
-    void showMainMenu();
-    void showStageSelect(int coin);
-    void showGameScreen(const std::vector<std::string>& boardView, int score, int coin);
-    void showScore(int score, int coin);
-    void showStageResult(bool success, int earnedCoin);
-    void showEnding();
-    void showMessage(const std::string& message);
+    void drawSelectStage(int stage);
+    //void drawBoard(const Board& board);
+    void drawScoreBar(int score, int stabilizer, int remainingTime); //stabilizer(안정시켜주는 장치?) = 재화
+    void showStageClear(int stage, int stabilizer);
+    void showGameOver();
+    void showIntro();
+    void showStory();
+    void showInsufficientCurrency(int required);
+    void showStageEntryConfirm(int required);
 };
