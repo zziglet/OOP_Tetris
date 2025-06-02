@@ -81,12 +81,6 @@ list<int> Board::checkClearedLines() {
         }
 
         if (full) {
-
-<<<<<<< HEAD
-            
-=======
-            // ??ƒ„ ?œê±°?˜ëŠ” ê²½ìš°, isBombë¥?falseë¡?ë³€ê²?
->>>>>>> 097b148f9f32835cc6457c8574c87beaaad73bf7
             for (int j = 0; j < COLS; j++) {
 
                 if (grid[i][j].getBrickType() == BrickEnum::EnergyBrick) {
@@ -160,7 +154,6 @@ void Board::setNextBlock(Block* nextBlock, int currTurn) {
     //cout << "spinCnt : " <<  currentBlock->getSpinCnt() << endl;
 
     if (currentBlock->getBrickType() == BrickEnum::BombBrick) {
-        //?œë¤?¼ë¡œ ë¸”ë¡??? íƒ?´ì„œ, ê·¸ê²Œ ??ƒ„?¼ë¡œ ?°ì?ê²??´ì•¼??
         isBomb = true;
         bombTurn = currTurn;
 
@@ -185,11 +178,8 @@ void Board::setNextBlock(Block* nextBlock, int currTurn) {
         // ÈÄº¸µé ¼ÅÇÃÇÔ.
         shuffle(temp.begin(), temp.end(), g);
 
-<<<<<<< HEAD
 
         // ÃÖ´ë 3°³±îÁö ÅÍÁö¹Ç·Î ¾Æ·¡ while·Î ¼±ÅÃ.
-=======
->>>>>>> 097b148f9f32835cc6457c8574c87beaaad73bf7
         while (cnt < temp.size() || cnt == 3) {
             pair<int, int> A = temp.at(cnt++);
             grid[A.first][A.second].setIsExplosive(true);
@@ -207,7 +197,6 @@ void Board::moveBlock(KeyEnum key) {
 
     int dr = 0, dc = 0;
 
-    // ë°©í–¥ ê²°ì •
     switch (key) {
     case KeyEnum::Left:  dc = -1; break;
     case KeyEnum::Right: dc = 1; break;
@@ -218,7 +207,6 @@ void Board::moveBlock(KeyEnum key) {
     int newR = currentBlock->r + dr;
     int newC = currentBlock->c + dc;
 
-    // ?´ë™ ê°€???¬ë? ?•ì¸
     if (canMove(newR, newC, currentBlock->getSpinCnt())) {
         currentBlock->r = newR;
         currentBlock->c = newC;
@@ -226,12 +214,7 @@ void Board::moveBlock(KeyEnum key) {
     }
     // ÀÌ ºÎºĞ Á¤»óÀÛµ¿ ÇÒ·ÃÁö ¸ğ¸£°ÚÀ½ tcÇØ¾ßÇÒµí
     else if (key == KeyEnum::Down) {
-<<<<<<< HEAD
         // ¾Æ·¡·Î ÀÌµ¿ ºÒ°¡´ÉÇÏ¸é °íÁ¤
-=======
-        // ?„ë˜ë¡??´ë™ ë¶ˆê??¥í•˜ë©?ê³ ì •
-        //cout << "asdfasdfasdfasdfasdfasdfasdfadsf" << endl;
->>>>>>> 097b148f9f32835cc6457c8574c87beaaad73bf7
         mergeBlock();
     }
 
@@ -252,11 +235,11 @@ bool Board::canMove(int r, int c, int spin) {
                 int newR = r + i;
                 int newC = c + j;
 
-                // ë²”ìœ„ ì²´í¬
+                // ¹üÀ§ Ã¼Å©
                 if (newR < 0 || newR >= ROWS || newC < 0 || newC >= COLS)
                     return false;
 
-                // ?´ë? ì±„ì›Œì§?ë¸”ëŸ­???ˆëŠ” ê²½ìš°
+                // ºó ºí·ÏÀÌ ¾Æ´Ï¸é ¾ÈµÊ
                 if (grid[newR][newC].getBrickType() != BrickEnum::EmptyBrick)
                     return false;
             }
