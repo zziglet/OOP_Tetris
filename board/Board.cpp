@@ -25,12 +25,12 @@ Board::Board() {
 }
 
 
-// Listë¡œ ë“¤ì–´ì˜¨ ë¼ì¸ ì œê±°.
+// List·Î µé¾î¿Â ¶óÀÎ Á¦°Å.
 void Board::clearLines(list<int> clearLines)
 {
-    //í•„ìš”í•  ìˆ˜ë„? ìˆì–´ì„œ ì¼ë‹¨ ì ì–´ë‘ 
+    //ÇÊ¿äÇÒ ¼öµµ? ÀÖ¾î¼­ ÀÏ´Ü Àû¾îµÒ
     int return_val = clearLines.size();
-    //ìœ„ì— ì¤„ë¶€í„° ì œê±°í•´ì•¼í•˜ë¯€ë¡œ sort()
+    //À§¿¡ ÁÙºÎÅÍ Á¦°ÅÇØ¾ßÇÏ¹Ç·Î sort()
     clearLines.sort();
 
 
@@ -39,7 +39,7 @@ void Board::clearLines(list<int> clearLines)
         clearLines.pop_front();
         bool isCheck = false;
 
-        // í­íƒ„ ì œê±°ë˜ëŠ” ê²½ìš°, isBombë¥¼ falseë¡œ ë³€ê²½
+        // ÆøÅº Á¦°ÅµÇ´Â °æ¿ì, isBomb¸¦ false·Î º¯°æ
         for (int j = 0; j < COLS; j++) {
             if (grid[now][j].getBrickType() == BrickEnum::BombBrick) {
                 isBomb = false;
@@ -49,12 +49,12 @@ void Board::clearLines(list<int> clearLines)
             }
         }
 
-        // í˜¹ì‹œ ì§€ì›Œì•¼í•˜ëŠ” ë¼ì¸ì— ë¹ˆ ë¸”ë¡ì´ ìˆë‹¤ë©´ continue
+        // È¤½Ã Áö¿ö¾ßÇÏ´Â ¶óÀÎ¿¡ ºó ºí·ÏÀÌ ÀÖ´Ù¸é continue
         if (isCheck)
             continue;
 
 
-        //ë¼ì¸ ì œê±°í•˜ê³  ìœ„ì— ë¸”ë¡ ë‚´ë¦¬ëŠ” ì‘ì—… ì‹œí–‰.
+        //¶óÀÎ Á¦°ÅÇÏ°í À§¿¡ ºí·Ï ³»¸®´Â ÀÛ¾÷ ½ÃÇà.
         for (int k = now; k > 0; k--) {
             for (int j = 0; j < COLS; j++) {
                 grid[k][j] = grid[k - 1][j];
@@ -82,7 +82,11 @@ list<int> Board::checkClearedLines() {
 
         if (full) {
 
+<<<<<<< HEAD
             
+=======
+            // ??ƒ„ ?œê±°?˜ëŠ” ê²½ìš°, isBombë¥?falseë¡?ë³€ê²?
+>>>>>>> 097b148f9f32835cc6457c8574c87beaaad73bf7
             for (int j = 0; j < COLS; j++) {
 
                 if (grid[i][j].getBrickType() == BrickEnum::EnergyBrick) {
@@ -144,7 +148,7 @@ bool Board::isGameOver() {
 void Board::setNextBlock(Block* nextBlock, int currTurn) {
 
 
-    //ê²Œì„ë©”ë‹ˆì ¸ê°€ ë¦´ë¦¬ì¦ˆ ì•ˆí• ê±°ë©´ ì•„ë˜ ì£¼ì„ ì œê±° í•´ì•¼í•¨.
+    //°ÔÀÓ¸Ş´ÏÁ®°¡ ¸±¸®Áî ¾ÈÇÒ°Å¸é ¾Æ·¡ ÁÖ¼® Á¦°Å ÇØ¾ßÇÔ.
     //delete currentBlock;
 
     currentBlock = nextBlock;
@@ -156,12 +160,12 @@ void Board::setNextBlock(Block* nextBlock, int currTurn) {
     //cout << "spinCnt : " <<  currentBlock->getSpinCnt() << endl;
 
     if (currentBlock->getBrickType() == BrickEnum::BombBrick) {
-        //ëœë¤ìœ¼ë¡œ ë¸”ë¡ì„ ì„ íƒí•´ì„œ, ê·¸ê²Œ í­íƒ„ìœ¼ë¡œ í„°ì§€ê²Œ í•´ì•¼í•¨.
+        //?œë¤?¼ë¡œ ë¸”ë¡??? íƒ?´ì„œ, ê·¸ê²Œ ??ƒ„?¼ë¡œ ?°ì?ê²??´ì•¼??
         isBomb = true;
         bombTurn = currTurn;
 
         vector<pair<int, int>> temp;
-        //í„°ì§ˆ ë¸”ë¡ í›„ë³´ ì„ íƒ
+        //ÅÍÁú ºí·Ï ÈÄº¸ ¼±ÅÃ
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLS; j++) {
 
@@ -178,11 +182,14 @@ void Board::setNextBlock(Block* nextBlock, int currTurn) {
 
         std::random_device rd;
         std::mt19937 g(rd());
-        // í›„ë³´ë“¤ ì…”í”Œí•¨.
+        // ÈÄº¸µé ¼ÅÇÃÇÔ.
         shuffle(temp.begin(), temp.end(), g);
 
+<<<<<<< HEAD
 
-        // ìµœëŒ€ 3ê°œê¹Œì§€ í„°ì§€ë¯€ë¡œ ì•„ë˜ whileë¡œ ì„ íƒ.
+        // ÃÖ´ë 3°³±îÁö ÅÍÁö¹Ç·Î ¾Æ·¡ while·Î ¼±ÅÃ.
+=======
+>>>>>>> 097b148f9f32835cc6457c8574c87beaaad73bf7
         while (cnt < temp.size() || cnt == 3) {
             pair<int, int> A = temp.at(cnt++);
             grid[A.first][A.second].setIsExplosive(true);
@@ -211,15 +218,20 @@ void Board::moveBlock(KeyEnum key) {
     int newR = currentBlock->r + dr;
     int newC = currentBlock->c + dc;
 
-    // ì´ë™ ê°€ëŠ¥ ì—¬ë¶€ í™•ì¸
+    // ?´ë™ ê°€???¬ë? ?•ì¸
     if (canMove(newR, newC, currentBlock->getSpinCnt())) {
         currentBlock->r = newR;
         currentBlock->c = newC;
         //cout << currentBlock->r << " : " << currentBlock->c << endl;
     }
-    // ì´ ë¶€ë¶„ ì •ìƒì‘ë™ í• ë ¨ì§€ ëª¨ë¥´ê² ìŒ tcí•´ì•¼í• ë“¯
+    // ÀÌ ºÎºĞ Á¤»óÀÛµ¿ ÇÒ·ÃÁö ¸ğ¸£°ÚÀ½ tcÇØ¾ßÇÒµí
     else if (key == KeyEnum::Down) {
-        // ì•„ë˜ë¡œ ì´ë™ ë¶ˆê°€ëŠ¥í•˜ë©´ ê³ ì •
+<<<<<<< HEAD
+        // ¾Æ·¡·Î ÀÌµ¿ ºÒ°¡´ÉÇÏ¸é °íÁ¤
+=======
+        // ?„ë˜ë¡??´ë™ ë¶ˆê??¥í•˜ë©?ê³ ì •
+        //cout << "asdfasdfasdfasdfasdfasdfasdfadsf" << endl;
+>>>>>>> 097b148f9f32835cc6457c8574c87beaaad73bf7
         mergeBlock();
     }
 
@@ -244,7 +256,7 @@ bool Board::canMove(int r, int c, int spin) {
                 if (newR < 0 || newR >= ROWS || newC < 0 || newC >= COLS)
                     return false;
 
-                // ì´ë¯¸ ì±„ì›Œì§„ ë¸”ëŸ­ì´ ìˆëŠ” ê²½ìš°
+                // ?´ë? ì±„ì›Œì§?ë¸”ëŸ­???ˆëŠ” ê²½ìš°
                 if (grid[newR][newC].getBrickType() != BrickEnum::EmptyBrick)
                     return false;
             }
@@ -309,7 +321,7 @@ void Board::triggerBomb(int currTurn) {
     }
 }
 
-//ë””ë²„ê·¸ìš©
+//µğ¹ö±×¿ë
 void Board::render() {
     for (int i = 0; i < ROWS; i++) {
         for (int j = 0; j < COLS; j++) {
