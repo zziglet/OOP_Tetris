@@ -21,6 +21,7 @@ KeyEnum InputHandler::processInput(char input) {
     if (input == ' ') return KeyEnum::HardDrop;
     return KeyEnum::Down;
 }
+
 int InputHandler::handleStageSelection() {
     int stageIndex = 0;
     while (true) {

@@ -1,14 +1,10 @@
+// -*- coding: utf-8 -*-
 // Renderer.h
 #pragma once
 #include <iostream>
 #include <thread>
 #include <chrono>
 #include "Board.h"
-#ifdef _WIN32
-#include <windows.h>
-#else
-#include <unistd.h>
-#endif
 
 class Renderer {
 public:

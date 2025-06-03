@@ -1,20 +1,15 @@
-// Renderer.cpp
+﻿// Renderer.cpp
 #include "Renderer.h"
 
 void Renderer::gotoXY(int x, int y) {
-#ifdef _WIN32
-    COORD coord = { (SHORT)x, (SHORT)y };
-    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
-#else
-    printf("\033[%d;%dH", y + 1, x + 1);
-#endif
+    std::printf("\033[%d;%dH", y + 1, x + 1);
 }
 
 void Renderer::drawSelectStage(int stageIndex) {
-    system("cls");
+    std::cout << "\033[2J\033[1;1H"; // 화면 전체 clear + 커서 (0,0) 이동
     std::cout << "===== SELECT STAGE =====" << std::endl;
     std::cout << "    1    2    3" << std::endl;
-    gotoXY(4 + stageIndex * 6, 2); // 화살표 출력 위치
+    gotoXY(4 + stageIndex * 6, 2);
     std::cout << "  ↑" << std::endl;
     gotoXY(0, 4);
     std::cout << "화살표 ← →로 이동, ENTER로 선택" << std::endl;

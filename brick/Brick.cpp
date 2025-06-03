@@ -23,7 +23,7 @@ void Brick::setIsExplosive(bool set)
     this->isExplosive = set;
 }
 
-BrickEnum Brick::getBrickType()
+BrickEnum Brick::getBrickType() const
 {
     return this->brickType;
 }
