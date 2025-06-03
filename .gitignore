@@ -42,6 +42,7 @@ cmake_install.cmake
 *.log
 *.tlog
 *.pch
+*.suo
 
 # Ninja 빌드 시스템
 .ninja_log
