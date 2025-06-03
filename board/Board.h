@@ -29,13 +29,13 @@ public:
     Board();
 
     void mergeBlock();
-    bool canMove(int r, int c, int spin);
+    bool canMove(const Block& block) const;
     void clearLines(list<int> clearLines);
     list<int> checkClearedLines();
     bool isGameOver();
     void setNextBlock(Block* nextBlock, int currTurn);
     void moveBlock(KeyEnum key);
-    const Brick(&getGrid() const)[ROWS][COLS];
+    const Brick(&getGrid(Block* block) const)[ROWS][COLS];
     void render();
 
     Block* getCurrentBlock() const;
