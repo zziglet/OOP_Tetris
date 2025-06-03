@@ -8,9 +8,11 @@
 using namespace std;
 
 class Board {
-private:
+public:
     static const int ROWS = 22;
     static const int COLS = 12;
+
+private:
     Brick grid[ROWS][COLS];
     Block* currentBlock;
     int currTurn = 0;
@@ -33,6 +35,6 @@ public:
     bool isGameOver();
     void setNextBlock(Block* nextBlock, int currTurn);
     void moveBlock(KeyEnum key);
-
+    const Brick(&getGrid() const)[ROWS][COLS];
     void render();
 };

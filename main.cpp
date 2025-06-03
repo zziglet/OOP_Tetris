@@ -5,6 +5,8 @@
 #include "Stage.h"
 #include "BlockGenerator.h"
 #include "Board.h"
+#include "Renderer.h"
+
 
 using namespace std;
 
@@ -49,6 +51,8 @@ int main()
 	Block* temp = generator.getNextBlock(currTurn, 0);
 	A.setNextBlock(temp, 0);
 
+	Renderer R;
+	R.showStory();
 
   return 0;
 }

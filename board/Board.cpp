@@ -220,6 +220,36 @@ void Board::moveBlock(KeyEnum key) {
 
 }
 
+
+const Brick(&Board::getGrid() const)[ROWS][COLS]{
+
+    Brick return_grid[ROWS][COLS];
+
+    for (int i = 0; i < ROWS; i++) {
+        for (int j = 0; j < COLS; j++) {
+            return_grid[i][j] = grid[i][j];
+        }
+    }
+
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            
+            int r = currentBlock->r + i;
+            int c = currentBlock->c + j;
+            
+            if (!(0 <= r && r < ROWS && 0 <= c && c < COLS)) 
+                continue;
+            
+            
+            if (currentBlock->shape[currentBlock->getSpinCnt()][i][j] != BrickEnum::EmptyBrick)
+                return_grid[r][c] = currentBlock->shape[currentBlock->getSpinCnt()][i][j];
+        }
+    }
+
+    return grid;
+}
+
+
 bool Board::canMove(int r, int c, int spin) {
 
     if (currentBlock == nullptr) {
