@@ -343,3 +343,18 @@ void Board::render() {
         std::cout << std::endl;
     }
 }
+
+Block* Board::getCurrentBlock() const {
+    return currentBlock;
+}
+
+void Board::rotateBlock() {
+    if (!currentBlock) return;
+
+    int nextSpin = (currentBlock->getSpinCnt() + 1) % 4;
+
+    // 회전 가능한 경우만 회전
+    if (canMove(currentBlock->r, currentBlock->c, nextSpin)) {
+        currentBlock->spin();
+    }
+}

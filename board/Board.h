@@ -22,14 +22,14 @@ private:
     //폭탄이 언제 생겼는지 저장하는 변수.
     int bombTurn = 0;
 
-    void mergeBlock();
-    bool canMove(int r, int c, int spin);
     void triggerEnergyCore(int startRow, int endRow);
     void triggerBomb(int currturn);
 
 public:
     Board();
 
+    void mergeBlock();
+    bool canMove(int r, int c, int spin);
     void clearLines(list<int> clearLines);
     list<int> checkClearedLines();
     bool isGameOver();
@@ -37,4 +37,7 @@ public:
     void moveBlock(KeyEnum key);
     const Brick(&getGrid() const)[ROWS][COLS];
     void render();
+
+    Block* getCurrentBlock() const;
+    void rotateBlock(); // 회전 시도 함수
 };
