@@ -1,8 +1,9 @@
 // Stage.cpp
 #include "Stage.h"
 
-Stage::Stage(int stageNumber, int duration, int speed, int minBombScore, int minEnergyCoreTurn) :
+Stage::Stage(int stageNumber, int currency, int duration, int speed, int minBombScore, int minEnergyCoreTurn) :
 	stageNumber(stageNumber),
+	currency(currency),
 	duration(duration),
 	speed(speed),
 	minBombScore(minBombScore),
@@ -13,6 +14,11 @@ Stage::Stage(int stageNumber, int duration, int speed, int minBombScore, int min
 int Stage::getStageNumber() const
 {
 	return this->stageNumber;
+}
+
+int Stage::getCurrency() const
+{
+	return this->currency;
 }
 
 int Stage::getDuration() const

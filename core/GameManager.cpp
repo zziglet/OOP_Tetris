@@ -1,15 +1,22 @@
 // GameManager.cpp
 #include "GameManager.h"
+#include "Constants.h"
 #include <thread>
 #include <chrono>
 #include <iostream>
 
 GameManager::GameManager()
-    : lives(3), currency(10), isGameOver(false), currentStageIndex(0), currentBlock(nullptr), turnCount(0), blockGenerator(Stage(1, 60, 500, 100, 20))
-{
-    stages.emplace_back(1, 60, 500, 100, 20);
-    stages.emplace_back(2, 70, 400, 150, 15);
-    stages.emplace_back(3, 90, 300, 200, 10);
+    : lives(Constants::INITIAL_LIVES),
+    currency(10),
+    isGameOver(false),
+    currentStageIndex(0),
+    currentBlock(nullptr),
+    turnCount(0),
+    blockGenerator(Stage(1, Constants::STAGE1_CURRENCY, Constants::STAGE1_DURATION, Constants::STAGE1_SPEED, Constants::BOMB_SCORE_THRESHOLD, Constants::ENERGY_CORE_TURN)) {
+
+    stages.emplace_back(1, Constants::STAGE1_CURRENCY, Constants::STAGE1_DURATION, Constants::STAGE1_SPEED, Constants::BOMB_SCORE_THRESHOLD, Constants::ENERGY_CORE_TURN);
+    stages.emplace_back(2, Constants::STAGE2_CURRENCY, Constants::STAGE2_DURATION, Constants::STAGE2_SPEED, Constants::BOMB_SCORE_THRESHOLD, Constants::ENERGY_CORE_TURN);
+    stages.emplace_back(3, Constants::STAGE3_CURRENCY, Constants::STAGE3_DURATION, Constants::STAGE3_SPEED, Constants::BOMB_SCORE_THRESHOLD, Constants::ENERGY_CORE_TURN);
 }
 
 GameManager::~GameManager() {
@@ -17,67 +24,71 @@ GameManager::~GameManager() {
 }
 
 void GameManager::startGame() {
-    renderer.showIntro();     // 인트로 출력
-    renderer.showStory();     // 게임 스토리 출력
+    renderer.showIntro();
+    renderer.showStory();
 
-    while (!isGameOver && currentStageIndex < stages.size()) {
+    while (!isGameOver) {
+        int selected = inputHandler.handleStageSelection();
+
+        if (selected < 1 || selected > static_cast<int>(stages.size())) {
+            renderer.showInsufficientCurrency(0);
+            continue;
+        }
+
+        Stage& selectedStage = stages[selected - 1];
+        int requiredCurrency = selectedStage.getCurrency();
+
+        if (currency < requiredCurrency) {
+            renderer.showInsufficientCurrency(requiredCurrency);
+            continue;
+        }
+
+        renderer.showStageEntryConfirm(requiredCurrency);
+        char confirm;
+        std::cin >> confirm;
+        if (confirm != 'y' && confirm != 'Y') continue;
+
+        currentStageIndex = selected - 1;
+        currency -= requiredCurrency;
         runStage();
+
+        if (isGameOver || currentStageIndex >= static_cast<int>(stages.size())) break;
     }
 
     endGame();
 }
 
-
 void GameManager::runStage() {
     Stage& stage = stages[currentStageIndex];
-    board = Board(); // 보드 초기화
-    timer.start(stage.getDuration()); // 변경
+    board = Board();  // 보드 초기화
+    timer.start(stage.getDuration());
     turnCount = 0;
-
     blockGenerator = BlockGenerator(stage);
+
     spawnNewBlock();
 
-    while (!timer.isTimeUp()) { // 변경
-        timer.update(); // 변경
+    while (!timer.isTimeUp()) {
+        timer.update();
 
         renderer.drawBoard(board);
         renderer.drawScoreBar(scoreManager.getScore(), currency, timer.getRemainingTime());
+
         KeyEnum key = inputHandler.getKey();
-        switch (key) {
-        case KeyEnum::Left:
-        case KeyEnum::Right:
-        case KeyEnum::Down:
-            board.moveBlock(key);
-            break;
-        case KeyEnum::Rotate:
-            board.rotateBlock();
-            break;
-        case KeyEnum::HardDrop:
-            while (board.canMove(
-                board.getCurrentBlock()->r + 1,
-                board.getCurrentBlock()->c,
-                board.getCurrentBlock()->getSpinCnt()))
-            {
-                board.moveBlock(KeyEnum::Down);
+        handleKeyInput(key);
+
+        Block* curr = board.getCurrentBlock();
+        if (curr) {
+            Block moved = *curr;
+            moved.r += 1;
+
+            if (!board.canMove(moved)) {
+                board.mergeBlock();
+                auto cleared = board.checkClearedLines();
+                board.clearLines(cleared);
+                scoreManager.addScore(static_cast<int>(cleared.size()));
+                turnCount++;
+                spawnNewBlock();
             }
-            board.mergeBlock();
-            break;
-        default:
-            break;
-        }
-
-
-        if (!board.canMove(
-            board.getCurrentBlock()->r + 1,
-            board.getCurrentBlock()->c,
-            board.getCurrentBlock()->getSpinCnt()))
-        {
-            board.mergeBlock();
-            auto cleared = board.checkClearedLines();
-            board.clearLines(cleared);
-            scoreManager.addScore(static_cast<int>(cleared.size()));
-            turnCount++;
-            spawnNewBlock();
         }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(stage.getSpeed()));
@@ -86,17 +97,62 @@ void GameManager::runStage() {
     handleClear();
 }
 
+void GameManager::handleKeyInput(KeyEnum key) {
+    Block* curr = board.getCurrentBlock();
+
+    if (!curr) return;  // 블럭이 없는 상태에서 조작하면 무시
+
+    switch (key) {
+    case KeyEnum::Left:
+    case KeyEnum::Right:
+    case KeyEnum::Down:
+        board.moveBlock(key);
+        break;
+    case KeyEnum::Rotate:
+        board.rotateBlock();
+        break;
+    case KeyEnum::HardDrop:
+        while (true) {
+            Block next = *curr; // 현재 블럭 복사
+            next.r += 1;        // 아래로 한 칸 이동 시도
+
+            if (!board.canMove(next)) break;
+
+            board.moveBlock(KeyEnum::Down);
+            curr = board.getCurrentBlock(); // 갱신된 블럭 포인터 확인
+            if (!curr) break;
+        }
+        board.mergeBlock();
+        break;
+    default:
+        break;
+    }
+}
+
 void GameManager::spawnNewBlock() {
     delete currentBlock;
     currentBlock = blockGenerator.getNextBlock(scoreManager.getScore(), turnCount);
 
-    // 생성된 블록의 위치에서 놓을 수 있는지 확인
-    if (!board.canMove(currentBlock->r, currentBlock->c, currentBlock->getSpinCnt())) {
+    // 중앙 상단 위치 지정
+    currentBlock->r = 0;
+    currentBlock->c = (Board::COLS - 4) / 2;
+    currentBlock->setSpinCnt(0);
+
+    // 유효성 검사 (객체 기반으로 검사)
+    if (!board.canMove(*currentBlock)) {
+        std::cout << "[DEBUG] canMove 실패: ";
+        std::cout << "r=" << currentBlock->r << ", c=" << currentBlock->c << std::endl;
         handleFailure();
+        delete currentBlock;
+        currentBlock = nullptr;
         return;
     }
 
+    // board가 소유권을 가져감
     board.setNextBlock(currentBlock, turnCount);
+
+    // GameManager는 더 이상 포인터를 유지하지 않음
+    currentBlock = nullptr;
 }
 
 

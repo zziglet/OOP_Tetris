@@ -41,5 +41,6 @@ public:
     void handleClear();
     void endGame();
     void spawnNewBlock();
+    void handleKeyInput(KeyEnum key);
 };
 
