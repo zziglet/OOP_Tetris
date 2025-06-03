@@ -29,18 +29,18 @@ Block* BlockGenerator::getNextBlock(int currScore, int currTurn) const
 		BrickEnum::ZBrick 
 	};
 
-	//cout << bombRate << "/" << energyRate << endl;
-	//int A = rand() % 100;
+	// 기본 위치: 중앙 상단 (r=0, c=4)
+	int startR = 0;
+	int startC = 4;
+
 	if (rand() % 100 < bombRate) {
-		//cout << "A : " << A << endl;
-		return new Block(BrickEnum::BombBrick,0,0);
-	}
-	//int B = rand() % 100;
-	if ( rand() % 100< energyRate) {
-		//cout << "B : " << B << endl;
-		return new Block(BrickEnum::EnergyBrick, 0, 0);
+		return new Block(BrickEnum::BombBrick, startR, startC);
 	}
 
-	return new Block(bricks[rand() % (sizeof(bricks) / sizeof(bricks[0]))], 0, 0);
+	if (rand() % 100 < energyRate) {
+		return new Block(BrickEnum::EnergyBrick, startR, startC);
+	}
 
+	BrickEnum randomType = bricks[rand() % (sizeof(bricks) / sizeof(bricks[0]))];
+	return new Block(randomType, startR, startC);
 }
