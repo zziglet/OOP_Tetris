@@ -1,5 +1,8 @@
 #include "Brick.h"
 
+Brick::Brick() : brickType(BrickEnum::EmptyBrick), isExplosive(false) {
+}
+
 Brick::Brick(BrickEnum brickType) : Brick(brickType, false)
 {
 }

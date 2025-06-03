@@ -1,6 +1,5 @@
 // Brick.h
 #pragma once
-#include <string>
 #include "BrickEnum.h"
 
 using namespace std;
@@ -11,6 +10,7 @@ protected:
     bool isExplosive;
 
 public:
+    Brick(); //기본 생성자 추가
     Brick(BrickEnum brickType);
     Brick(BrickEnum brickType, bool isExplosive);
     bool getIsExplosive();

@@ -21,6 +21,7 @@ Icon
 *.vc.db-wal
 *.vc.opendb
 *.slnx.sqlite
+*.vs/
 
 # CMake
 build/

@@ -8,15 +8,17 @@
 class Block {
 public:
     int r, c;
-
-protected:
     BrickEnum brickType;
-    char shape[4][4][4];
-    int spinCnt = 0;
+    BrickEnum shape[4][4][4];
+
+private:
+    int spinCnt;
 
 public:
     Block(BrickEnum brickType, int r, int c);
     BrickEnum getBrick(int r, int c);
     BrickEnum getBrickType();
+    
+    int getSpinCnt();
     void spin();
 };

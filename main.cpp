@@ -4,10 +4,12 @@
 #include "block/Block.h"
 #include "Stage.h"
 #include "BlockGenerator.h"
+#include "Board.h"
 
 using namespace std;
 
 void printBlock(Block block);
+void printBoard(Board A);
 
 int main()
 {
@@ -26,7 +28,8 @@ int main()
 	BlockGenerator generator = BlockGenerator(stage);
 
 	for (int i = 0; i < 1000; i++) {
-		BrickEnum A = generator.getNextBlock(0, 0).getBrickType();
+		BrickEnum A = (*generator.getNextBlock(0, 0)).getBrickType();
+
 		if (A == BrickEnum::BombBrick || A == BrickEnum::EmptyBrick || A == BrickEnum::EnergyBrick) {
 			cout << "Error is occured during generating block" << endl;
 			break;
@@ -34,14 +37,29 @@ int main()
 	}
 
 	for (int i = 0; i < 7; i++) 
-		printBlock(generator.getNextBlock(7500, 9));
+		printBlock(*generator.getNextBlock(7500, 9));
 
 	for (int i = 0; i < 7; i++)
-		printBlock(generator.getNextBlock(6000, 7));
+		printBlock(*generator.getNextBlock(6000, 7));
+
+	Board A{};
+	
+	//A.render();
+	int currTurn = 0;
+	Block* temp = generator.getNextBlock(currTurn, 0);
+	A.setNextBlock(temp, 0);
+
 
   return 0;
 }
 
+
+void printBoard(Board A) {
+	static int cnt = 1;
+
+	cout << "--------" << cnt++ << "--------" << endl;
+	A.render();
+}
 
 void printBlock(Block block) {
 	static int cnt = 1;
