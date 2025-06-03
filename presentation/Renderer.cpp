@@ -16,11 +16,27 @@ void Renderer::drawSelectStage(int stageIndex) {
 }
 
 void Renderer::drawBoard(const Board& board) {
+    std::cout << "\033[2J\033[1;1H"; // 화면 전체 clear + 커서 (0,0) 이동
     Renderer::gotoXY(0, 5);
-    const auto& grid = board.getGrid();
-    for (int i = 4; i < 22; ++i) { // 상단 4줄은 출력 안 함
-        for (int j = 0; j < 12; ++j) {
+    const auto& grid = board.getGrid(board.getCurrentBlock());
+    Block* block = board.getCurrentBlock(); // currentBlock 가져오기
+
+    for (int i = 4; i < Board::ROWS; ++i) {
+        for (int j = 0; j < Board::COLS; ++j) {
             BrickEnum type = grid[i][j].getBrickType();
+
+            // currentBlock이 존재하고 현재 위치에 해당하는 블록이 있다면
+            if (block != nullptr) {
+                int rInBlock = i - block->r;
+                int cInBlock = j - block->c;
+
+                if (rInBlock >= 0 && rInBlock < 4 && cInBlock >= 0 && cInBlock < 4) {
+                    if (block->shape[block->getSpinCnt()][rInBlock][cInBlock] != BrickEnum::EmptyBrick) {
+                        type = block->shape[block->getSpinCnt()][rInBlock][cInBlock];
+                    }
+                }
+            }
+
             if (type == BrickEnum::EmptyBrick) std::cout << "□ ";
             else if (type == BrickEnum::BombBrick) std::cout << "B ";
             else if (type == BrickEnum::EnergyBrick) std::cout << "E ";
