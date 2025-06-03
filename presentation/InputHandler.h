@@ -4,6 +4,7 @@
 
 class InputHandler {
 public:
-    char getUserInput();
-    KeyEnum processInput(char input);
+    static char getUserInput();
+    static KeyEnum processInput(char input);
+    static int handleStageSelection();
 };
