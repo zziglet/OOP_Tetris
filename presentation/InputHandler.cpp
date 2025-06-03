@@ -1,4 +1,5 @@
 // InputHandler.cpp
+
 #include "InputHandler.h"
 #include "Renderer.h"
 #include <conio.h>
@@ -36,4 +37,8 @@ int InputHandler::handleStageSelection() {
         else if (key == KeyEnum::Left && stageIndex > 0) stageIndex--;
     }
     return stageIndex + 1; // 1~3 반환
+}
+
+KeyEnum InputHandler::getKey() {
+    return processInput(getUserInput());
 }
