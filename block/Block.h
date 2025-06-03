@@ -19,6 +19,7 @@ public:
     BrickEnum getBrick(int r, int c);
     BrickEnum getBrickType();
     
-    int getSpinCnt();
+    int getSpinCnt() const;
     void spin();
+    void setSpinCnt(int value) { spinCnt = value; }
 };
