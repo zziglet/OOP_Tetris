@@ -137,7 +137,10 @@ void Renderer::showGameOver() {
     std::cout << RED << BOLD << border << "\n"
         << "|         GAME OVER         |\n"
         << border << RESET << std::endl;
-    std::this_thread::sleep_for(std::chrono::seconds(3));
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    std::cout << "\n계속하려면 Enter 키를 누르세요...";
+    std::cin.ignore(); // 이전 입력 비우기
+    std::cin.get();    // 엔터 대기
 }
 
 void Renderer::showIntro() {

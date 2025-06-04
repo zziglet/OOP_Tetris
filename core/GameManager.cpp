@@ -28,7 +28,12 @@ void GameManager::startGame() {
     renderer.showIntro();
     renderer.showStory();
 
-    while (!isGameOver) {
+    while (true) {
+        if (isGameOver) {
+            endGame();
+            break; // 완전 종료
+        }
+
         int selected = inputHandler.handleStageSelection();
 
         if (selected < 1 || selected > static_cast<int>(stages.size())) {
@@ -53,10 +58,8 @@ void GameManager::startGame() {
         currency -= requiredCurrency;
         runStage();
 
-        if (isGameOver || currentStageIndex >= static_cast<int>(stages.size())) break;
+        // if (isGameOver || currentStageIndex >= static_cast<int>(stages.size())) break;
     }
-
-    endGame();
 }
 
 void GameManager::runStage() {
@@ -76,6 +79,8 @@ void GameManager::runStage() {
 
     bool blockJustMerged = false;
     while (!timer.isTimeUp()) {
+        if (isGameOver) return;
+
         timer.update();
 
         // 키 입력 빠르게 감지
@@ -130,7 +135,10 @@ void GameManager::runStage() {
         std::this_thread::sleep_for(std::chrono::milliseconds(frameDelay));
     }
 
-    handleClear();
+    // 게임 오버가 아닌 경우만 클리어 처리
+    if (!isGameOver) {
+        handleClear();
+    }
 }
 
 
@@ -199,14 +207,14 @@ void GameManager::handleFailure(bool isExplosion) {
         if (lives <= 0) {
             currency = 0; // 재화 초기화
             isGameOver = true;
-            renderer.showGameOver(); // true = 폭발로 인한 종료
+            endGame();
             return;
         }
     }
     else {
         // 천장 찍음 or 시간 초과
         isGameOver = true;
-        renderer.showGameOver(); // false = 일반 실패
+        endGame();
     }
 }
 
