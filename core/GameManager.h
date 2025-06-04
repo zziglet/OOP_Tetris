@@ -37,7 +37,7 @@ public:
 
     void startGame();
     void runStage();
-    void handleFailure();
+    void handleFailure(bool isExplosion);
     void handleClear();
     void endGame();
     void spawnNewBlock();

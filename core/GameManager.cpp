@@ -13,11 +13,11 @@ GameManager::GameManager()
     currentStageIndex(0),
     currentBlock(nullptr),
     turnCount(0),
-    blockGenerator(Stage(1, Constants::STAGE1_CURRENCY, Constants::STAGE1_DURATION, Constants::STAGE1_SPEED, Constants::BOMB_SCORE_THRESHOLD, Constants::ENERGY_CORE_TURN)) {
+    blockGenerator(Stage(1, Constants::STAGE1_CURRENCY, Constants::STAGE1_DURATION, Constants::STAGE1_SPEED, Constants::STAGE1_SUCCESS_SCORE, Constants::BOMB_SCORE_THRESHOLD, Constants::ENERGY_CORE_TURN)) {
 
-    stages.emplace_back(1, Constants::STAGE1_CURRENCY, Constants::STAGE1_DURATION, Constants::STAGE1_SPEED, Constants::BOMB_SCORE_THRESHOLD, Constants::ENERGY_CORE_TURN);
-    stages.emplace_back(2, Constants::STAGE2_CURRENCY, Constants::STAGE2_DURATION, Constants::STAGE2_SPEED, Constants::BOMB_SCORE_THRESHOLD, Constants::ENERGY_CORE_TURN);
-    stages.emplace_back(3, Constants::STAGE3_CURRENCY, Constants::STAGE3_DURATION, Constants::STAGE3_SPEED, Constants::BOMB_SCORE_THRESHOLD, Constants::ENERGY_CORE_TURN);
+    stages.emplace_back(1, Constants::STAGE1_CURRENCY, Constants::STAGE1_DURATION, Constants::STAGE1_SPEED, Constants::STAGE1_SUCCESS_SCORE, Constants::BOMB_SCORE_THRESHOLD, Constants::ENERGY_CORE_TURN);
+    stages.emplace_back(2, Constants::STAGE2_CURRENCY, Constants::STAGE2_DURATION, Constants::STAGE2_SPEED, Constants::STAGE2_SUCCESS_SCORE, Constants::BOMB_SCORE_THRESHOLD, Constants::ENERGY_CORE_TURN);
+    stages.emplace_back(3, Constants::STAGE3_CURRENCY, Constants::STAGE3_DURATION, Constants::STAGE3_SPEED, Constants::STAGE3_SUCCESS_SCORE, Constants::BOMB_SCORE_THRESHOLD, Constants::ENERGY_CORE_TURN);
 }
 
 GameManager::~GameManager() {
@@ -112,8 +112,8 @@ void GameManager::runStage() {
         // 화면 렌더링은 느리게 (깜빡임 방지)
         auto elapsedRender = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastRenderTime).count();
         if (elapsedRender >= renderDelay) {
-            renderer.drawBoard(board);
-            renderer.drawScoreBar(scoreManager.getScore(), currency, timer.getRemainingTime());
+            renderer.drawBoard(board, scoreManager.getScore(), stage.getSuccessScore(), currentStageIndex + 1, timer.getRemainingTime(), lives);
+            // renderer.drawScoreBar(scoreManager.getScore(), currency, timer.getRemainingTime());
             lastRenderTime = now;
         }
 
@@ -179,7 +179,7 @@ void GameManager::spawnNewBlock() {
     if (!board.canMove(*currentBlock)) {
         std::cout << "[DEBUG] canMove 실패: ";
         std::cout << "r=" << currentBlock->r << ", c=" << currentBlock->c << std::endl;
-        handleFailure();
+        handleFailure(false);
         delete currentBlock;
         currentBlock = nullptr;
         return;
@@ -193,20 +193,30 @@ void GameManager::spawnNewBlock() {
 }
 
 
-void GameManager::handleFailure() {
-    lives--;
-    if (lives <= 0) {
-        isGameOver = true;
+void GameManager::handleFailure(bool isExplosion) {
+    if (isExplosion) {
+        lives--;
+        if (lives <= 0) {
+            currency = 0; // 재화 초기화
+            isGameOver = true;
+            renderer.showGameOver(); // true = 폭발로 인한 종료
+            return;
+        }
     }
-    renderer.showGameOver();
+    else {
+        // 천장 찍음 or 시간 초과
+        isGameOver = true;
+        renderer.showGameOver(); // false = 일반 실패
+    }
 }
 
 void GameManager::handleClear() {
     int reward = 5 + currentStageIndex * 3;
     currency += reward;
-    currentStageIndex++;
     renderer.showStageClear(currentStageIndex, reward);
+    currentStageIndex++;
 }
+
 
 void GameManager::endGame() {
     renderer.showGameOver();
