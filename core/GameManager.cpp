@@ -4,6 +4,7 @@
 #include <thread>
 #include <chrono>
 #include <iostream>
+#include <conio.h>
 
 GameManager::GameManager()
     : lives(Constants::INITIAL_LIVES),
@@ -64,38 +65,74 @@ void GameManager::runStage() {
     timer.start(stage.getDuration());
     turnCount = 0;
     blockGenerator = BlockGenerator(stage);
-
     spawnNewBlock();
 
+    const int frameDelay = 20; // 입력 감지용 빠른 루프
+    const int renderDelay = 200; // 화면 그리는 간격
+
+    int fallInterval = stage.getSpeed();
+    auto lastFallTime = std::chrono::steady_clock::now();
+    auto lastRenderTime = std::chrono::steady_clock::now();
+
+    bool blockJustMerged = false;
     while (!timer.isTimeUp()) {
         timer.update();
 
-        renderer.drawBoard(board);
-        renderer.drawScoreBar(scoreManager.getScore(), currency, timer.getRemainingTime());
+        // 키 입력 빠르게 감지
+        if (_kbhit()) {
+            char ch = _getch();
+            KeyEnum key = inputHandler.processInput(ch);
+            handleKeyInput(key);
 
-        KeyEnum key = inputHandler.getKey();
-        handleKeyInput(key);
-
-        Block* curr = board.getCurrentBlock();
-        if (curr) {
-            Block moved = *curr;
-            moved.r += 1;
-
-            if (!board.canMove(moved)) {
-                board.mergeBlock();
-                auto cleared = board.checkClearedLines();
-                board.clearLines(cleared);
-                scoreManager.addScore(static_cast<int>(cleared.size()));
-                turnCount++;
-                spawnNewBlock();
+            if (!board.getCurrentBlock()) {
+                blockJustMerged = true;
             }
         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(stage.getSpeed()));
+        // 자동 낙하
+        auto now = std::chrono::steady_clock::now();
+        auto elapsedFall = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastFallTime).count();
+        if (elapsedFall >= fallInterval) {
+            Block* curr = board.getCurrentBlock();
+            if (curr) {
+                Block moved = *curr;
+                moved.r += 1;
+
+                if (board.canMove(moved)) {
+                    board.moveBlock(KeyEnum::Down);
+                }
+                else {
+                    board.mergeBlock();
+                    blockJustMerged = true;
+                }
+            }
+            lastFallTime = now;
+        }
+
+        // 화면 렌더링은 느리게 (깜빡임 방지)
+        auto elapsedRender = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastRenderTime).count();
+        if (elapsedRender >= renderDelay) {
+            renderer.drawBoard(board);
+            renderer.drawScoreBar(scoreManager.getScore(), currency, timer.getRemainingTime());
+            lastRenderTime = now;
+        }
+
+        // 블록 병합 처리
+        if (blockJustMerged && !board.getCurrentBlock()) {
+            auto cleared = board.checkClearedLines();
+            board.clearLines(cleared);
+            scoreManager.addScore(static_cast<int>(cleared.size()));
+            turnCount++;
+            spawnNewBlock();
+            blockJustMerged = false;
+        }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(frameDelay));
     }
 
     handleClear();
 }
+
 
 void GameManager::handleKeyInput(KeyEnum key) {
     Block* curr = board.getCurrentBlock();

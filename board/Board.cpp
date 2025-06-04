@@ -334,17 +334,17 @@ void Board::render() {
 }
 
 Block* Board::getCurrentBlock() const {
-    if (!currentBlock) {
+    /*if (!currentBlock) {
         std::cout << "[DEBUG] getCurrentBlock(): currentBlock is nullptr\n";
-    }
+    }*/
     return currentBlock;
 }
 
 void Board::rotateBlock() {
-    if (!currentBlock) {
+    /*if (!currentBlock) {
         std::cout << "[DEBUG] rotateBlock 실패: currentBlock이 nullptr입니다.\n";
         return;
-    }
+    }*/
 
     int nextSpin = (currentBlock->getSpinCnt() + 1) % 4;
 
