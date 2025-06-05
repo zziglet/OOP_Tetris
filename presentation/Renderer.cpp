@@ -39,9 +39,9 @@ void Renderer::drawBoard(const Board& board, int score, int targetScore, int sta
     const auto& grid = board.getGrid(board.getCurrentBlock());
     Block* block = board.getCurrentBlock();
 
-    int boardLeft = 0;
+    int boardLeft = 3;
     int boardTop = 5;
-    int infoLeft = Board::COLS * 2 + 5;
+    int infoLeft = Board::COLS * 2 + 15;
 
     for (int i = 4; i < Board::ROWS; ++i) {
         gotoXY(boardLeft, boardTop + (i - 4));
