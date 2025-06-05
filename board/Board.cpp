@@ -123,26 +123,7 @@ list<int> Board::checkClearedLines() {
     //return return_val;
 }
 
-bool Board::isGameOver() {
-
-    if (bombCnt >= 3) {
-        return true;
-    }
-
-    const int VISIBLE_START_ROW = 4;
-
-    for (int i = 0; i < VISIBLE_START_ROW; i++) {
-        for (int j = 0; j < COLS; j++) {
-            if (grid[i][j].getBrickType() != BrickEnum::EmptyBrick) {
-                return true;
-            }
-        }
-    }
-
-    return false;
-}
-
-void Board::setNextBlock(Block* nextBlock, int currTurn) {
+bool Board::setNextBlock(Block* nextBlock, int currTurn) {
 
 
     //게임메니져가 릴리즈 안할거면 아래 주석 제거 해야함.
@@ -150,9 +131,8 @@ void Board::setNextBlock(Block* nextBlock, int currTurn) {
 
     currentBlock = nextBlock;
     this->currTurn = currTurn;
-
     
-    triggerBomb(currTurn);
+    bool bombTriggered = triggerBomb(currTurn);  // 폭탄 터졌는지 확인
 
     //cout << "spinCnt : " <<  currentBlock->getSpinCnt() << endl;
 
@@ -190,6 +170,7 @@ void Board::setNextBlock(Block* nextBlock, int currTurn) {
 
     }
 
+    return bombTriggered;
 }
 
 void Board::moveBlock(KeyEnum key) {
@@ -306,8 +287,9 @@ void Board::triggerEnergyCore(int startRow, int endRow) {
     
 }
 
-void Board::triggerBomb(int currTurn) {
-    
+bool Board::triggerBomb(int currTurn) {
+    bool bombHappened = false;
+
     if (currTurn - bombTurn == 4) {
         if (isBomb) {
             for (int i = 0; i < ROWS; i++) {
@@ -316,6 +298,7 @@ void Board::triggerBomb(int currTurn) {
                     if (grid[i][j].getIsExplosive()) {
                         grid[i][j] = Brick();
                         bombCnt++;
+                        bombHappened = true;
                     }
                 
                 }
@@ -324,6 +307,7 @@ void Board::triggerBomb(int currTurn) {
         }
        
     }
+    return bombHappened;
 }
 
 //디버그용

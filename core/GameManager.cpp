@@ -9,6 +9,7 @@
 GameManager::GameManager()
     : lives(Constants::INITIAL_LIVES),
     currency(0),
+    explosion(0),
     isGameOver(false),
     currentStageIndex(0),
     currentBlock(nullptr),
@@ -66,6 +67,7 @@ void GameManager::runStage() {
     scoreManager.reset();
     timer.start(stage.getDuration());
     turnCount = 0;
+    explosion = 0;
     blockGenerator = BlockGenerator(stage);
     spawnNewBlock();
 
@@ -78,10 +80,6 @@ void GameManager::runStage() {
 
     bool blockJustMerged = false;
     while (!timer.isTimeUp()) {
-        if (isGameOver) {
-            return;
-        }
-
         timer.update();
 
         // 키 입력 빠르게 감지
@@ -127,9 +125,10 @@ void GameManager::runStage() {
         if (blockJustMerged && !board.getCurrentBlock()) {
             auto cleared = board.checkClearedLines();
             board.clearLines(cleared);
-            scoreManager.addScore(static_cast<int>(cleared.size()));
+            scoreManager.addScore(static_cast<int>(cleared.size() * Constants::CLEAR_LINES_SCORE));
             turnCount++;
             spawnNewBlock();
+            scoreManager.addScore(Constants::NEW_BLOCK_SCORE);
             blockJustMerged = false;
         }
 
@@ -202,6 +201,11 @@ void GameManager::spawnNewBlock() {
         return;
     }
 
+    bool exploded = board.setNextBlock(currentBlock, turnCount);
+    if (exploded) {
+        handleFailure(true);  // 폭탄으로 인한 실패
+    }
+
     // board가 소유권을 가져감
     board.setNextBlock(currentBlock, turnCount);
 
@@ -213,18 +217,29 @@ void GameManager::spawnNewBlock() {
 
 
 void GameManager::handleFailure(bool isExplosion) {
+    if (isGameOver) return;  // 이미 게임 오버면 중복 처리 방지
+
     if (isExplosion) {
-        lives--; 
+        explosion++;  // 누적 폭발 수 증가
+
+        if (explosion >= 3) {
+            lives = 0;
+            currency = 0;
+            isGameOver = true;
+            renderer.showGameOver();
+        }
+        else {
+            lives--; // 생명도 1 감소
+            if (lives <= 0) {
+                isGameOver = true;
+                renderer.showGameOver();
+            }
+        }
     }
     else {
-        lives = 0;
-    }
-
-    if (lives <= 0) {
-        currency = 0;
+        lives = 0; // 천장 닿거나 시간 초과는 즉사
         isGameOver = true;
         renderer.showGameOver();
-        return;
     }
 }
 

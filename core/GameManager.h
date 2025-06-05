@@ -14,6 +14,7 @@
 class GameManager {
 private:
     int lives;
+    int explosion;
     int currency;
     bool isGameOver;
 
