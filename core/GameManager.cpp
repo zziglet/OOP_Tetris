@@ -77,6 +77,10 @@ void GameManager::runStage() {
     auto lastRenderTime = std::chrono::steady_clock::now();
 
     bool blockJustMerged = false;
+    cout << CLEAR_SCREEN;
+    std::cout << "\033[?25l"; // Ä¿¼­ ¼û±è
+    renderer.drawGame(board, scoreManager.getScore(), stage.getSuccessScore(), currentStageIndex + 1, timer.getRemainingTime(), lives);
+
     while (!timer.isTimeUp()) {
         if (isGameOver) {
             return;
@@ -93,6 +97,8 @@ void GameManager::runStage() {
             if (!board.getCurrentBlock()) {
                 blockJustMerged = true;
             }
+
+            //Renderer::drawBoard(board);
         }
 
         // ÀÚµ¿ ³«ÇÏ
@@ -118,7 +124,7 @@ void GameManager::runStage() {
         // È­¸é ·»´õ¸µÀº ´À¸®°Ô (±ôºýÀÓ ¹æÁö)
         auto elapsedRender = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastRenderTime).count();
         if (elapsedRender >= renderDelay) {
-            renderer.drawBoard(board, scoreManager.getScore(), stage.getSuccessScore(), currentStageIndex + 1, timer.getRemainingTime(), lives);
+            renderer.drawGame(board, scoreManager.getScore(), stage.getSuccessScore(), currentStageIndex + 1, timer.getRemainingTime(), lives);
             // renderer.drawScoreBar(scoreManager.getScore(), currency, timer.getRemainingTime());
             lastRenderTime = now;
         }
@@ -146,6 +152,8 @@ void GameManager::runStage() {
             handleClear(); // ¼º°ø
         }
     }
+
+    std::cout << "\033[?25h"; // Ä¿¼­ Ç¥½Ã
 
 }
 
@@ -185,7 +193,7 @@ void GameManager::handleKeyInput(KeyEnum key) {
 
 void GameManager::spawnNewBlock() {
     delete currentBlock;
-    currentBlock = blockGenerator.getNextBlock(scoreManager.getScore(), turnCount);
+    currentBlock = blockGenerator.getNextBlock(scoreManager.getScore());
 
     // Áß¾Ó »ó´Ü À§Ä¡ ÁöÁ¤
     currentBlock->r = 0;

@@ -10,7 +10,7 @@ class Renderer {
 public:
     static void gotoXY(int x, int y);
     static void drawSelectStage(int stageIndex, int currency);
-    static void drawBoard(const Board& board, int score, int targetScore, int stage, int remainingTime, int lives);
+    static void drawGame(const Board& board, int score, int targetScore, int stage, int remainingTime, int lives);
     static void showStageClear(int stage, int stabilizer);
     static void showGameOver();
     static void showIntro();
