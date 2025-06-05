@@ -3,21 +3,24 @@
 #include "Block.h"
 #include "Brick.h"
 #include "BrickEnum.h"
+#include "cmath"
 #include <random>
 
 BlockGenerator::BlockGenerator(Stage stage) :
 	minBombScore(stage.getMinBombScore()),
-	minEnergyCoreTurn(stage.getMinEnergyCoreTurn())
+	minEnergyCoreTurn(stage.getMinEnergyCoreTurn()),
+	lastBombScore(stage.getMinBombScore()),
+	lastEnergyCoreTurn(stage.getMinEnergyCoreTurn())
 {
 	srand(unsigned(time(NULL)));
 }
 
-Block* BlockGenerator::getNextBlock(int currScore, int currTurn) const
+Block* BlockGenerator::getNextBlock(int currScore, int currTurn)
 {
 	int bombRate, energyRate;
 
-	bombRate = 100 * (currScore - minBombScore) / minBombScore;
-	energyRate = 100 * (currTurn - minEnergyCoreTurn) / minEnergyCoreTurn;
+	bombRate = (int) pow(10.0,(double) (currScore - lastBombScore) / minBombScore);
+	energyRate = (int) pow(10.0 ,(double) (currTurn - lastEnergyCoreTurn) / minEnergyCoreTurn);
 
 	BrickEnum bricks[]{ 
 		BrickEnum::LBrick, 
@@ -34,10 +37,12 @@ Block* BlockGenerator::getNextBlock(int currScore, int currTurn) const
 	int startC = 4;
 
 	if (rand() % 100 < bombRate) {
+		lastBombScore = currScore;
 		return new Block(BrickEnum::BombBrick, startR, startC);
 	}
 
 	if (rand() % 100 < energyRate) {
+		lastEnergyCoreTurn = currTurn;
 		return new Block(BrickEnum::EnergyBrick, startR, startC);
 	}
 

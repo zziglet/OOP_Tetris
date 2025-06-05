@@ -5,12 +5,12 @@
 
 class BlockGenerator {
 private:
-	int lastBombScore = 0;
-	int lastEnergyCoreTurn = 0;
+	int lastBombScore;
+	int lastEnergyCoreTurn;
 	int minBombScore;
 	int minEnergyCoreTurn;
 
 public:
 	BlockGenerator(Stage stage);
-	Block* getNextBlock(int currScore, int currStage) const;
+	Block* getNextBlock(int currScore, int currStage);
 };

@@ -44,14 +44,17 @@ void Board::clearLines(list<int> clearLines)
             if (grid[now][j].getBrickType() == BrickEnum::BombBrick) {
                 isBomb = false;
             }
-            if (grid[now][j].getBrickType() == BrickEnum::EmptyBrick) {
+            /*if (grid[now][j].getBrickType() == BrickEnum::EmptyBrick) {
                 isCheck = true;
-            }
+            }*/
         }
 
-        // 혹시 지워야하는 라인에 빈 블록이 있다면 continue
+
+        // 에너지 코어 블록이 지우는 라인은 빈 블록이 있으므로 체크 X
+
+        /* 혹시 지워야하는 라인에 빈 블록이 있다면 continue
         if (isCheck)
-            continue;
+            continue;*/
 
 
         //라인 제거하고 위에 블록 내리는 작업 시행.
