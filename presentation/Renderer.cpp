@@ -11,14 +11,27 @@ void Renderer::gotoXY(int x, int y) {
     std::printf("\033[%d;%dH", y + 1, x + 1);
 }
 
-void Renderer::drawSelectStage(int stageIndex) {
+void Renderer::drawSelectStage(int stageIndex, int currency) {
     std::cout << CLEAR_SCREEN << CURSOR_HOME;
     std::cout << BOLD << CYAN << "===== SELECT STAGE =====" << RESET << std::endl;
-    std::cout << "    1    2    3" << std::endl;
-    gotoXY(4 + stageIndex * 6, 2);
+
+    // 현재 보유 재화
+    std::cout << YELLOW << "보유 재화: " << currency << RESET << "\n\n";
+
+    // 스테이지 번호 출력
+    std::cout << "    1     2     3" << std::endl;
+
+    // 선택 화살표
+    gotoXY(4 + stageIndex * 6, 4);
     std::cout << "↑" << std::endl;
-    gotoXY(0, 4);
-    std::cout << YELLOW << "화살표 ← →로 이동, ENTER로 선택" << RESET << std::endl;
+
+    // 스테이지 입장 재화 표시
+    std::cout << "\n입장 필요 재화: ";
+    std::cout << " " << Constants::STAGE1_CURRENCY << "   ";
+    std::cout << Constants::STAGE2_CURRENCY << "   ";
+    std::cout << Constants::STAGE3_CURRENCY << std::endl;
+
+    std::cout << "\n" << YELLOW << "화살표 ← →로 이동, ENTER로 선택" << RESET << std::endl;
 }
 
 void Renderer::drawBoard(const Board& board, int score, int targetScore, int stage, int remainingTime, int lives) {
@@ -116,6 +129,7 @@ void Renderer::drawBoard(const Board& board, int score, int targetScore, int sta
         case 17: std::cout << "  Controls:"; break;
         case 18: std::cout << "  ← → ↓ : Move Block"; break;
         case 19: std::cout << "  ↑     : Rotate Block"; break;
+        case 20: std::cout << "  Space : Hard Drop"; break;
         }
     }
 }
@@ -222,4 +236,33 @@ void Renderer::showStageEntryConfirm(int required) {
         << BOLD << required << RESET << YELLOW
         << " 스태빌라이저가 필요합니다.\n"
         << "입장하시겠습니까? (y/n): " << RESET;
+}
+
+void Renderer::showEnding() {
+    std::cout << CLEAR_SCREEN << CURSOR_HOME;
+
+    std::cout << BOLD << GREEN;
+    std::cout << "=====================================\n";
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    std::cout << "       임무 완료 - 궤도 안정화\n";
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    std::cout << "=====================================\n\n";
+    std::cout << RESET;
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    std::cout << CYAN;
+    std::cout << "정해진 시간 안에 모든 구조 블록을 정리했어.\n";
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    std::cout << "지구 궤도는 안정됐고, 인류는 다시 통신을 되찾았지.\n\n";
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    std::cout << "수많은 우주 쓰레기 사이에서 네 판단력과 집중력이\n";
+    std::cout << "지구를 구했어. 정말 잘했어!\n";
+    std::cout << RESET;
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    std::cout << "\n" << BRIGHT_BLUE << "지금, 지구는 다시 숨을 쉬고 있어..." << RESET << "\n\n";
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    std::cout << YELLOW << "\nENTER를 누르면 메인 메뉴로 돌아갑니다...\n" << RESET << std::endl;
+
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::cin.get();
 }

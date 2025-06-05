@@ -8,7 +8,7 @@
 
 GameManager::GameManager()
     : lives(Constants::INITIAL_LIVES),
-    currency(10),
+    currency(0),
     isGameOver(false),
     currentStageIndex(0),
     currentBlock(nullptr),
@@ -22,6 +22,7 @@ GameManager::GameManager()
 
 GameManager::~GameManager() {
     delete currentBlock;
+    currentBlock = nullptr;
 }
 
 void GameManager::startGame() {
@@ -29,12 +30,7 @@ void GameManager::startGame() {
     renderer.showStory();
 
     while (true) {
-        if (isGameOver) {
-            endGame();
-            break; // 완전 종료
-        }
-
-        int selected = inputHandler.handleStageSelection();
+        int selected = inputHandler.handleStageSelection(currency);
 
         if (selected < 1 || selected > static_cast<int>(stages.size())) {
             renderer.showInsufficientCurrency(0);
@@ -56,15 +52,18 @@ void GameManager::startGame() {
 
         currentStageIndex = selected - 1;
         currency -= requiredCurrency;
+
         runStage();
 
-        // if (isGameOver || currentStageIndex >= static_cast<int>(stages.size())) break;
+        isGameOver = false;
     }
 }
 
 void GameManager::runStage() {
+    system("cls");
     Stage& stage = stages[currentStageIndex];
     board = Board();  // 보드 초기화
+    scoreManager.reset();
     timer.start(stage.getDuration());
     turnCount = 0;
     blockGenerator = BlockGenerator(stage);
@@ -79,7 +78,9 @@ void GameManager::runStage() {
 
     bool blockJustMerged = false;
     while (!timer.isTimeUp()) {
-        if (isGameOver) return;
+        if (isGameOver) {
+            return;
+        }
 
         timer.update();
 
@@ -135,12 +136,18 @@ void GameManager::runStage() {
         std::this_thread::sleep_for(std::chrono::milliseconds(frameDelay));
     }
 
-    // 게임 오버가 아닌 경우만 클리어 처리
+    // 게임 오버가 아닌 경우만 클리어 or 실패 판정
     if (!isGameOver) {
-        handleClear();
+        if (scoreManager.getScore() < stage.getSuccessScore()) {
+            // 타이머 종료 + 스코어 부족 → 실패 처리
+            handleFailure(false); // 일반 실패로 처리
+        }
+        else {
+            handleClear(); // 성공
+        }
     }
-}
 
+}
 
 void GameManager::handleKeyInput(KeyEnum key) {
     Block* curr = board.getCurrentBlock();
@@ -159,7 +166,7 @@ void GameManager::handleKeyInput(KeyEnum key) {
     case KeyEnum::HardDrop:
         while (true) {
             //khj : 이거 deepcopy 아닐텐데 의도대로 작동하나요?
-
+            //jjw : 헉 저두몰랐네요.. 잘 작동하긴 합니다.
             Block next = *curr; // 현재 블럭 복사
             next.r += 1;        // 아래로 한 칸 이동 시도
 
@@ -199,36 +206,51 @@ void GameManager::spawnNewBlock() {
     board.setNextBlock(currentBlock, turnCount);
 
     //khj : 그러면 setNextBlock에서 currentBlock이 들어오면 동적할당 릴리즈 하는거 켜야하지 않나요?
+    //jjw : 아 맞아요 소멸자에 넣긴 했는데 여기서 릴리즈해야할까요
     // GameManager는 더 이상 포인터를 유지하지 않음
-    currentBlock = nullptr;
+    // currentBlock = nullptr;
 }
 
 
 void GameManager::handleFailure(bool isExplosion) {
-    // khj : 인자가 true로 언제 들어오나요.?
     if (isExplosion) {
-        lives--;
-        if (lives <= 0) {
-            currency = 0; // 재화 초기화
-            isGameOver = true;
-            endGame();
-            return;
-        }
+        lives--; 
     }
     else {
-        // 천장 찍음 or 시간 초과
+        lives = 0;
+    }
+
+    if (lives <= 0) {
+        currency = 0;
         isGameOver = true;
-        endGame();
+        renderer.showGameOver();
+        return;
     }
 }
 
 void GameManager::handleClear() {
-    int reward = 5 + currentStageIndex * 3;
+    int reward = 0;
+    switch (currentStageIndex) {
+    case 0:
+        reward = Constants::STAGE1_SUCCESS_CURRENCY;
+        break;
+    case 1:
+        reward = Constants::STAGE2_SUCCESS_CURRENCY;
+        break;
+    case 2:
+        reward = Constants::STAGE3_SUCCESS_CURRENCY;
+        break;
+    default:
+        reward = 0;
+    }
+
     currency += reward;
     renderer.showStageClear(currentStageIndex, reward);
+    if (currentStageIndex == static_cast<int>(stages.size()) - 1) {
+        renderer.showEnding();
+    }
     currentStageIndex++;
 }
-
 
 void GameManager::endGame() {
     renderer.showGameOver();

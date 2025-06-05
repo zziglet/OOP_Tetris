@@ -32,19 +32,35 @@
 #endif // CONSTANTS_H
 
 namespace Constants {
+    // user 생명
     constexpr int INITIAL_LIVES = 3;
+
+    // stage별 제한 시간
     constexpr int STAGE1_DURATION = 120;
     constexpr int STAGE2_DURATION = 90;
     constexpr int STAGE3_DURATION = 60;
+
+    // stage별 필요 재화
     constexpr int STAGE1_CURRENCY = 0;
     constexpr int STAGE2_CURRENCY = 5;
     constexpr int STAGE3_CURRENCY = 10;
-    constexpr int STAGE1_SUCCESS_SCORE = 5;
-    constexpr int STAGE2_SUCCESS_SCORE = 7;
-    constexpr int STAGE3_SUCCESS_SCORE = 9;
+
+    // stage별 클리어 시 지급 재화
+    constexpr int STAGE1_SUCCESS_CURRENCY = 8;
+    constexpr int STAGE2_SUCCESS_CURRENCY = 13;
+    constexpr int STAGE3_SUCCESS_CURRENCY = 30;
+
+    // stage별 클리어 스코어 조건
+    constexpr int STAGE1_SUCCESS_SCORE = 3;
+    constexpr int STAGE2_SUCCESS_SCORE = 5;
+    constexpr int STAGE3_SUCCESS_SCORE = 7;
+
+    // stage별 게임 진행 속도
     constexpr int STAGE1_SPEED = 1000;
     constexpr int STAGE2_SPEED = 800;
     constexpr int STAGE3_SPEED = 500;
+    
+    // 게임 매니저에서 가지고 있던 변수들..
     constexpr int BOMB_SCORE_THRESHOLD = 5000;
     constexpr int ENERGY_CORE_TURN = 6;
 }

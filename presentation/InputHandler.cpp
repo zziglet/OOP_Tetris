@@ -23,10 +23,10 @@ KeyEnum InputHandler::processInput(char input) {
     return KeyEnum::Down;
 }
 
-int InputHandler::handleStageSelection() {
+int InputHandler::handleStageSelection(int currency) {
     int stageIndex = 0;
     while (true) {
-        Renderer::drawSelectStage(stageIndex);
+        Renderer::drawSelectStage(stageIndex, currency);
         char input = getUserInput();
 
         // 엔터키로 선택 완료
