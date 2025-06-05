@@ -120,7 +120,7 @@ void Renderer::drawBoard(const Board& board, int score, int targetScore, int sta
         case 13: {
             std::string lifeBar = "  Life      : ";
             for (int l = 0; l < lives; ++l) lifeBar += "♥";
-            for (int l = lives; l < 3; ++l) lifeBar += " ";
+            for (int l = lives; l < 3; ++l) lifeBar += "♡ ";
             std::cout << lifeBar;
             break;
         }

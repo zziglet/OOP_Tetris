@@ -51,9 +51,9 @@ namespace Constants {
     constexpr int STAGE3_SUCCESS_CURRENCY = 30;
 
     // stage별 클리어 스코어 조건
-    constexpr int STAGE1_SUCCESS_SCORE = 10000;
-    constexpr int STAGE2_SUCCESS_SCORE = 30000;
-    constexpr int STAGE3_SUCCESS_SCORE = 40000;
+    constexpr int STAGE1_SUCCESS_SCORE = 3;
+    constexpr int STAGE2_SUCCESS_SCORE = 5;
+    constexpr int STAGE3_SUCCESS_SCORE = 7;
 
     // stage별 게임 진행 속도
     constexpr int STAGE1_SPEED = 1000;
@@ -61,8 +61,6 @@ namespace Constants {
     constexpr int STAGE3_SPEED = 500;
     
     // 게임 매니저에서 가지고 있던 변수들..
-    constexpr int CLEAR_LINES_SCORE = 1000;
-    constexpr int NEW_BLOCK_SCORE = 300;
     constexpr int BOMB_SCORE_THRESHOLD = 5000;
     constexpr int ENERGY_CORE_TURN = 6;
 }

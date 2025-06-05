@@ -23,7 +23,7 @@ private:
     int bombTurn = 0;
 
     void triggerEnergyCore(int startRow, int endRow);
-    bool triggerBomb(int currturn);
+    void triggerBomb(int currturn);
 
 public:
     Board();
@@ -32,7 +32,8 @@ public:
     bool canMove(const Block& block) const;
     void clearLines(list<int> clearLines);
     list<int> checkClearedLines();
-    bool setNextBlock(Block* nextBlock, int currTurn);
+    bool isGameOver();
+    void setNextBlock(Block* nextBlock, int currTurn);
     void moveBlock(KeyEnum key);
     const Brick(&getGrid(Block* block) const)[ROWS][COLS];
     void render();
