@@ -1,10 +1,13 @@
 // InputHandler.h
+
 #pragma once
+
 #include "KeyEnum.h"
 
 class InputHandler {
 public:
-    static char getUserInput();
-    static KeyEnum processInput(char input);
-    static int handleStageSelection();
+    char getUserInput();
+    KeyEnum processInput(char input);
+    KeyEnum getKey(); // ¼öÁ¤µÊ
+    int handleStageSelection();
 };

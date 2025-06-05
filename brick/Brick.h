@@ -15,6 +15,6 @@ public:
     Brick(BrickEnum brickType, bool isExplosive);
     bool getIsExplosive();
     void setIsExplosive(bool set);
-    BrickEnum getBrickType();
+    BrickEnum getBrickType() const;
 };
 

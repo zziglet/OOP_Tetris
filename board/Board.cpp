@@ -189,95 +189,84 @@ void Board::setNextBlock(Block* nextBlock, int currTurn) {
 
 }
 
-
-
 void Board::moveBlock(KeyEnum key) {
-    if (currentBlock == nullptr) 
+    if (currentBlock == nullptr)
         return;
 
-    int dr = 0, dc = 0;
+    Block moved = *currentBlock;
 
     switch (key) {
-    case KeyEnum::Left:  dc = -1; break;
-    case KeyEnum::Right: dc = 1; break;
-    case KeyEnum::Down:  dr = 1; break;
-    default: return;
+    case KeyEnum::Left:
+        moved.c -= 1;
+        break;
+    case KeyEnum::Right:
+        moved.c += 1;
+        break;
+    case KeyEnum::Down:
+        moved.r += 1;
+        break;
+    default:
+        return;
     }
 
-    int newR = currentBlock->r + dr;
-    int newC = currentBlock->c + dc;
-
-    if (canMove(newR, newC, currentBlock->getSpinCnt())) {
-        currentBlock->r = newR;
-        currentBlock->c = newC;
-        //cout << currentBlock->r << " : " << currentBlock->c << endl;
+    if (canMove(moved)) {
+        currentBlock->r = moved.r;
+        currentBlock->c = moved.c;
     }
-    // 이 부분 정상작동 할련지 모르겠음 tc해야할듯
     else if (key == KeyEnum::Down) {
-        // 아래로 이동 불가능하면 고정
-        mergeBlock();
+        mergeBlock();  // 더 이상 아래로 못 내려가면 고정
     }
-
 }
 
 
-const Brick(&Board::getGrid() const)[ROWS][COLS]{
+const Brick(&Board::getGrid(Block* block) const)[ROWS][COLS]{
+    static Brick return_grid[ROWS][COLS];  // static으로 유지
 
-    Brick return_grid[ROWS][COLS];
-
+    // 원래 grid 복사
     for (int i = 0; i < ROWS; i++) {
         for (int j = 0; j < COLS; j++) {
             return_grid[i][j] = grid[i][j];
         }
     }
 
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            
-            int r = currentBlock->r + i;
-            int c = currentBlock->c + j;
-            
-            if (!(0 <= r && r < ROWS && 0 <= c && c < COLS)) 
-                continue;
-            
-            
-            if (currentBlock->shape[currentBlock->getSpinCnt()][i][j] != BrickEnum::EmptyBrick)
-                return_grid[r][c] = currentBlock->shape[currentBlock->getSpinCnt()][i][j];
+    // 전달된 block 덧씌우기
+    if (block != nullptr) {
+        int spin = block->getSpinCnt();
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (block->shape[spin][i][j] != BrickEnum::EmptyBrick) {
+                    int r = block->r + i;
+                    int c = block->c + j;
+
+                    if (0 <= r && r < ROWS && 0 <= c && c < COLS) {
+                        return_grid[r][c] = Brick(block->shape[spin][i][j]);
+                    }
+                }
+            }
         }
     }
 
-    return grid;
+    return return_grid;
 }
 
-
-bool Board::canMove(int r, int c, int spin) {
-
-    if (currentBlock == nullptr) {
-        return false;
-    }
-
-
+bool Board::canMove(const Block& block) const {
     for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {   
-            //cout << i << " : " << j << spin << endl;
-            if (currentBlock->shape[spin][i][j] != BrickEnum::EmptyBrick) {
+        for (int j = 0; j < 4; j++) {
+            if (block.shape[block.getSpinCnt()][i][j] != BrickEnum::EmptyBrick) {
+                int newR = block.r + i;
+                int newC = block.c + j;
 
-                int newR = r + i;
-                int newC = c + j;
-
-                // 범위 체크
                 if (newR < 0 || newR >= ROWS || newC < 0 || newC >= COLS)
                     return false;
-
-                // 빈 블록이 아니면 안됨
                 if (grid[newR][newC].getBrickType() != BrickEnum::EmptyBrick)
                     return false;
             }
         }
     }
-
     return true;
 }
+
 
 void Board::mergeBlock() {
     if (!currentBlock) return;
@@ -341,5 +330,33 @@ void Board::render() {
             std::cout << (grid[i][j].getBrickType() == BrickEnum::EmptyBrick ? 0 : 1) << " ";
         }
         std::cout << std::endl;
+    }
+}
+
+Block* Board::getCurrentBlock() const {
+    /*if (!currentBlock) {
+        std::cout << "[DEBUG] getCurrentBlock(): currentBlock is nullptr\n";
+    }*/
+    return currentBlock;
+}
+
+void Board::rotateBlock() {
+    /*if (!currentBlock) {
+        std::cout << "[DEBUG] rotateBlock 실패: currentBlock이 nullptr입니다.\n";
+        return;
+    }*/
+
+    int nextSpin = (currentBlock->getSpinCnt() + 1) % 4;
+
+    // 회전한 블록을 복사하여 검사
+    Block rotated = *currentBlock;
+    rotated.setSpinCnt(nextSpin);
+
+    if (canMove(rotated)) {
+        currentBlock->spin();
+    }
+    else {
+        std::cout << "[DEBUG] rotateBlock 실패: 회전 불가능한 위치입니다. "
+            << "r=" << rotated.r << ", c=" << rotated.c << ", nextSpin=" << nextSpin << "\n";
     }
 }

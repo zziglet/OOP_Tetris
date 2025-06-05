@@ -290,10 +290,14 @@ BrickEnum Block::getBrickType()
     return this->brickType;
 }
 
-int Block::getSpinCnt()
-{
+int Block::getSpinCnt() const {
+    if (spinCnt < 0 || spinCnt >= 4) {
+        std::cerr << "[ERROR] Invalid spinCnt: " << spinCnt << std::endl;
+        return 0; // fallback
+    }
     return spinCnt;
 }
+
 
 void Block::spin()
 {
