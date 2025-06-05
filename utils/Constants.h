@@ -61,6 +61,6 @@ namespace Constants {
     constexpr int STAGE3_SPEED = 500;
     
     // 게임 매니저에서 가지고 있던 변수들..
-    constexpr int BOMB_SCORE_THRESHOLD = 5000;
-    constexpr int ENERGY_CORE_TURN = 6;
+    constexpr int BOMB_SCORE_THRESHOLD = 3;
+    constexpr int ENERGY_CORE_TURN = 3;
 }

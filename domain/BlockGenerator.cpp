@@ -8,19 +8,19 @@
 
 BlockGenerator::BlockGenerator(Stage stage) :
 	minBombScore(stage.getMinBombScore()),
-	minEnergyCoreTurn(stage.getMinEnergyCoreTurn()),
+	minEnergyCoreScore(stage.getMinEnergyCoreScore()),
 	lastBombScore(stage.getMinBombScore()),
-	lastEnergyCoreTurn(stage.getMinEnergyCoreTurn())
+	lastEnergyCoreScore(stage.getMinEnergyCoreScore())
 {
 	srand(unsigned(time(NULL)));
 }
 
-Block* BlockGenerator::getNextBlock(int currScore, int currTurn)
+Block* BlockGenerator::getNextBlock(int currScore)
 {
 	int bombRate, energyRate;
 
 	bombRate = (int) pow(10.0,(double) (currScore - lastBombScore) / minBombScore);
-	energyRate = (int) pow(10.0 ,(double) (currTurn - lastEnergyCoreTurn) / minEnergyCoreTurn);
+	energyRate = (int) pow(10.0 ,(double) (currScore - lastEnergyCoreScore) / minEnergyCoreScore);
 
 	BrickEnum bricks[]{ 
 		BrickEnum::LBrick, 
@@ -36,14 +36,14 @@ Block* BlockGenerator::getNextBlock(int currScore, int currTurn)
 	int startR = 0;
 	int startC = 4;
 
+	if (rand() % 100 < energyRate) {
+		lastEnergyCoreScore = currScore;
+		return new Block(BrickEnum::EnergyBrick, startR, startC);
+	}
+
 	if (rand() % 100 < bombRate) {
 		lastBombScore = currScore;
 		return new Block(BrickEnum::BombBrick, startR, startC);
-	}
-
-	if (rand() % 100 < energyRate) {
-		lastEnergyCoreTurn = currTurn;
-		return new Block(BrickEnum::EnergyBrick, startR, startC);
 	}
 
 	BrickEnum randomType = bricks[rand() % (sizeof(bricks) / sizeof(bricks[0]))];
