@@ -34,8 +34,8 @@ void Renderer::drawSelectStage(int stageIndex, int currency) {
     std::cout << "\n" << YELLOW << "화살표 ← →로 이동, ENTER로 선택" << RESET << std::endl;
 }
 
-void Renderer::drawBoard(const Board& board, int score, int targetScore, int stage, int remainingTime, int lives) {
-    std::cout << CLEAR_SCREEN << CURSOR_HOME;
+void Renderer::drawGame(const Board& board, int score, int targetScore, int stage, int remainingTime, int lives) {
+    std::cout << CURSOR_HOME;
     const auto& grid = board.getGrid(board.getCurrentBlock());
     Block* block = board.getCurrentBlock();
 
@@ -98,7 +98,9 @@ void Renderer::drawBoard(const Board& board, int score, int targetScore, int sta
                 break;
             }
         }
+
         gotoXY(infoLeft, boardTop + (i - 4));
+
         switch (i) {
         case 4:  std::cout << BOLD << "Orbit Stabilizer" << RESET; break;
         case 6:  std::cout << "  Stage     : " << stage; break;
@@ -132,6 +134,8 @@ void Renderer::drawBoard(const Board& board, int score, int targetScore, int sta
         case 20: std::cout << "  Space : Hard Drop"; break;
         }
     }
+
+    gotoXY(10000000, 10000000);
 }
 
 void Renderer::showStageClear(int stage, int stabilizer) {
