@@ -11,7 +11,7 @@ public:
     static void gotoXY(int x, int y);
     static void drawSelectStage(int stageIndex, int currency);
     static void drawGame(const Board& board, int score, int targetScore, int stage, int remainingTime, int lives);
-    static void showStageClear(int stage, int stabilizer);
+    static void showStageClear(int stage, int stabilizer, int score);
     static void showGameOver();
     static void showIntro();
     static void showStory();

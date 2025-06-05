@@ -104,7 +104,7 @@ void Renderer::drawGame(const Board& board, int score, int targetScore, int stag
         switch (i) {
         case 4:  std::cout << BOLD << "Orbit Stabilizer" << RESET; break;
         case 6:  std::cout << "  Stage     : " << stage; break;
-        case 7:  std::cout << "  Time Left : " << remainingTime << "s"; break;
+        case 7:  std::cout << "  Time Left : " << remainingTime; break;
         case 9:  std::cout << "  Score:"; break;
         case 10: {
             int barLength = 24;
@@ -122,7 +122,7 @@ void Renderer::drawGame(const Board& board, int score, int targetScore, int stag
         case 13: {
             std::string lifeBar = "  Life      : ";
             for (int l = 0; l < lives; ++l) lifeBar += "♥";
-            for (int l = lives; l < 3; ++l) lifeBar += "♡ ";
+            for (int l = lives; l < 3; ++l) lifeBar += " ";
             std::cout << lifeBar;
             break;
         }
@@ -138,15 +138,16 @@ void Renderer::drawGame(const Board& board, int score, int targetScore, int stag
     gotoXY(10000000, 10000000);
 }
 
-void Renderer::showStageClear(int stage, int stabilizer) {
+void Renderer::showStageClear(int stage, int stabilizer, int score) {
     gotoXY(0, 30);
     std::string border = "==============================";
     std::cout << GREEN << border << "\n"
         << "|        STAGE CLEAR        |\n"
         << border << RESET << std::endl;
-    std::cout << GREEN << "Stage " << stage << " Cleared!\n"
+    std::cout << GREEN << "Stage " << stage + 1 << " Cleared!\n"
         << "You earned stabilizer: +" << stabilizer << RESET << std::endl;
-    std::this_thread::sleep_for(std::chrono::seconds(2));
+    std::cout << GREEN << "You earned score: +" << score << RESET << std::endl;
+    std::this_thread::sleep_for(std::chrono::seconds(3));
 }
 
 void Renderer::showGameOver() {
@@ -156,9 +157,8 @@ void Renderer::showGameOver() {
         << "|         GAME OVER         |\n"
         << border << RESET << std::endl;
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
-    std::cout << "\n계속하려면 Enter 키를 누르세요...";
-    std::cin.ignore(); // 이전 입력 비우기
-    std::cin.get();    // 엔터 대기
+    std::cout << YELLOW << "\nPress ENTER to continue..." << RESET << std::endl;
+    std::cin.get();
 }
 
 void Renderer::showIntro() {
