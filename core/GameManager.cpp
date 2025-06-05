@@ -158,6 +158,8 @@ void GameManager::handleKeyInput(KeyEnum key) {
         break;
     case KeyEnum::HardDrop:
         while (true) {
+            //khj : 이거 deepcopy 아닐텐데 의도대로 작동하나요?
+
             Block next = *curr; // 현재 블럭 복사
             next.r += 1;        // 아래로 한 칸 이동 시도
 
@@ -196,12 +198,14 @@ void GameManager::spawnNewBlock() {
     // board가 소유권을 가져감
     board.setNextBlock(currentBlock, turnCount);
 
+    //khj : 그러면 setNextBlock에서 currentBlock이 들어오면 동적할당 릴리즈 하는거 켜야하지 않나요?
     // GameManager는 더 이상 포인터를 유지하지 않음
     currentBlock = nullptr;
 }
 
 
 void GameManager::handleFailure(bool isExplosion) {
+    // khj : 인자가 true로 언제 들어오나요.?
     if (isExplosion) {
         lives--;
         if (lives <= 0) {
