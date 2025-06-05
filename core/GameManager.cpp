@@ -185,7 +185,7 @@ void GameManager::handleKeyInput(KeyEnum key) {
 
 void GameManager::spawnNewBlock() {
     delete currentBlock;
-    currentBlock = blockGenerator.getNextBlock(scoreManager.getScore(), turnCount);
+    currentBlock = blockGenerator.getNextBlock(scoreManager.getScore());
 
     // 중앙 상단 위치 지정
     currentBlock->r = 0;

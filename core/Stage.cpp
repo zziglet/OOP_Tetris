@@ -8,7 +8,7 @@ Stage::Stage(int stageNumber, int currency, int duration, int speed, int success
 	speed(speed),
 	successScore(successScore),
 	minBombScore(minBombScore),
-	minEnergyCoreTurn(minEnergyCoreTurn)
+	minEnergyCoreScore(minEnergyCoreScore)
 {
 }
 
@@ -42,7 +42,7 @@ int Stage::getMinBombScore() const
 	return this->minBombScore;
 }
 
-int Stage::getMinEnergyCoreTurn() const
+int Stage::getMinEnergyCoreScore() const
 {
-	return this->minEnergyCoreTurn;
+	return this->minEnergyCoreScore;
 }
