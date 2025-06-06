@@ -35,6 +35,8 @@ void Renderer::drawSelectStage(int stageIndex, int currency) {
     std::cout << "\n" << YELLOW << "화살표 ← →로 이동, ENTER로 선택" << RESET << std::endl;
 }
 
+
+
 void Renderer::drawGame(const Board& board, int score, int targetScore, int stage, int remainingTime, int lives) {
     std::cout << CURSOR_HOME;
     const auto& grid = board.getGrid(board.getCurrentBlock());
@@ -112,10 +114,11 @@ void Renderer::drawGame(const Board& board, int score, int targetScore, int stag
         }
         case 11: std::cout << "  " << score << " pts (목표: " << targetScore << " pts)"; break;
         case 13: {
-            std::string lifeBar = "  Life      : ";
+            std:: cout << "  Life      : ";
+            std::string lifeBar = "";
             for (int l = 0; l < lives; ++l) lifeBar += "♥";
             for (int l = lives; l < 3; ++l) lifeBar += " ";
-            std::cout << lifeBar;
+            std::cout << std::setw(7) <<lifeBar;
             break;
         }
         case 14: std::cout << BRIGHT_RED << "▩ " << "  Explosive Block "; break;
@@ -263,4 +266,29 @@ void Renderer::showEnding() {
 
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     std::cin.get();
+}
+
+void Renderer::clearLine(const Board& board, int row)
+{
+    std::cout << CURSOR_HOME;
+    const auto& grid = board.getGrid(board.getCurrentBlock());
+
+    std::cout << "\033[?25l"; // 커서 숨김
+    int boardLeft = 3;
+    int boardTop = 5;
+    int infoLeft = Board::COLS * 2 + 15;
+
+    if (!(4 <= row && row < Board::ROWS)) {
+        return;
+    }
+
+    gotoXY(boardLeft, boardTop + (row - 4));
+
+    for (int j = 0; j < Board::COLS; ++j) {
+        std::cout << BRIGHT_BLACK << "□ " << RESET;
+        std::this_thread::sleep_for(std::chrono::milliseconds(20)); // 1초 대기
+    }
+    
+    std::cout << "\033[?25h";
+    gotoXY(10000000, 10000000);
 }

@@ -10,6 +10,7 @@
 #include "random"
 #include "list"
 
+
 using namespace std;
 
 
@@ -65,6 +66,24 @@ void Board::clearLines(list<int> clearLines)
         }
 
     }
+}
+
+void Board::clearLine(int row)
+{
+    for (int j = 0; j < COLS; j++) {
+        if (grid[row][j].getBrickType() == BrickEnum::BombBrick) {
+            isBomb = false;
+        }
+    }
+    
+    //라인 제거하고 위에 블록 내리는 작업 시행.
+    for (int k = row; k > 0; k--) {
+        for (int j = 0; j < COLS; j++) {
+            grid[k][j] = grid[k - 1][j];
+        }
+    }
+
+
 }
 
 
