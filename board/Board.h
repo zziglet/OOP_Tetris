@@ -5,6 +5,8 @@
 #include "KeyEnum.h"
 #include "list"
 
+#include <memory>
+
 using namespace std;
 
 class Board {
@@ -14,7 +16,7 @@ public:
 
 private:
     Brick grid[ROWS][COLS];
-    Block* currentBlock;
+    shared_ptr<Block> currentBlock;
     int currTurn = 0;
     int bombCnt = 0;
     //대충 폭탄이 있다는 뜻.
@@ -32,11 +34,11 @@ public:
     bool canMove(const Block& block) const;
     void clearLines(list<int> clearLines);
     list<int> checkClearedLines();
-    bool setNextBlock(Block* nextBlock, int currTurn);
+    bool setNextBlock(shared_ptr<Block> nextBlock, int currTurn);
     void moveBlock(KeyEnum key);
-    const Brick(&getGrid(Block* block) const)[ROWS][COLS];
+    const Brick(&getGrid(shared_ptr<Block> block) const)[ROWS][COLS];
     void render();
 
-    Block* getCurrentBlock() const;
+    shared_ptr<Block> getCurrentBlock() const;
     void rotateBlock(); // 회전 시도 함수
 };

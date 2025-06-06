@@ -63,6 +63,13 @@ namespace Constants {
     // 게임 매니저에서 가지고 있던 변수들..
     constexpr int CLEAR_LINES_SCORE = 1000;
     constexpr int NEW_BLOCK_SCORE = 300;
-    constexpr int BOMB_SCORE_THRESHOLD = 5000;
-    constexpr int ENERGY_CORE_TURN = 6;
+
+    constexpr int STAGE1_BOMB_SCORE_THRESHOLD = 6000;
+    constexpr int STAGE1_ENERGY_CORE_THRESHOLD = 3000;
+
+    constexpr int STAGE2_BOMB_SCORE_THRESHOLD = 5000;
+    constexpr int STAGE2_ENERGY_CORE_THRESHOLD = 5000;
+
+    constexpr int STAGE3_BOMB_SCORE_THRESHOLD = 3000;
+    constexpr int STAGE3_ENERGY_CORE_THRESHOLD = 6000;
 }

@@ -1,7 +1,7 @@
 // Stage.cpp
 #include "Stage.h"
 
-Stage::Stage(int stageNumber, int currency, int duration, int speed, int successScore, int minBombScore, int minEnergyCoreTurn) :
+Stage::Stage(int stageNumber, int currency, int duration, int speed, int successScore, int minBombScore, int minEnergyCoreScore) :
 	stageNumber(stageNumber),
 	currency(currency),
 	duration(duration),

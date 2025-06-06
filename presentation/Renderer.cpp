@@ -6,6 +6,7 @@
 #include <chrono>
 #include <vector>
 #include <string>
+#include <iomanip>
 
 void Renderer::gotoXY(int x, int y) {
     std::printf("\033[%d;%dH", y + 1, x + 1);
@@ -37,27 +38,18 @@ void Renderer::drawSelectStage(int stageIndex, int currency) {
 void Renderer::drawGame(const Board& board, int score, int targetScore, int stage, int remainingTime, int lives) {
     std::cout << CURSOR_HOME;
     const auto& grid = board.getGrid(board.getCurrentBlock());
-    Block* block = board.getCurrentBlock();
 
+    std::cout << "\033[?25l"; // 커서 숨김
     int boardLeft = 3;
     int boardTop = 5;
     int infoLeft = Board::COLS * 2 + 15;
 
     for (int i = 4; i < Board::ROWS; ++i) {
         gotoXY(boardLeft, boardTop + (i - 4));
+
         for (int j = 0; j < Board::COLS; ++j) {
             BrickEnum type = grid[i][j].getBrickType();
 
-            if (block != nullptr) {
-                int rInBlock = i - block->r;
-                int cInBlock = j - block->c;
-
-                if (rInBlock >= 0 && rInBlock < 4 && cInBlock >= 0 && cInBlock < 4) {
-                    if (block->shape[block->getSpinCnt()][rInBlock][cInBlock] != BrickEnum::EmptyBrick) {
-                        type = block->shape[block->getSpinCnt()][rInBlock][cInBlock];
-                    }
-                }
-            }
 
             switch (type) {
             case BrickEnum::EmptyBrick:
@@ -104,7 +96,7 @@ void Renderer::drawGame(const Board& board, int score, int targetScore, int stag
         switch (i) {
         case 4:  std::cout << BOLD << "Orbit Stabilizer" << RESET; break;
         case 6:  std::cout << "  Stage     : " << stage; break;
-        case 7:  std::cout << "  Time Left : " << remainingTime; break;
+        case 7:  std::cout << "  Time Left : " << std::setw(3) << (remainingTime); break;
         case 9:  std::cout << "  Score:"; break;
         case 10: {
             int barLength = 24;
@@ -135,6 +127,8 @@ void Renderer::drawGame(const Board& board, int score, int targetScore, int stag
         }
     }
 
+
+    std::cout << "\033[?25h"; // 커서 표시
     gotoXY(10000000, 10000000);
 }
 

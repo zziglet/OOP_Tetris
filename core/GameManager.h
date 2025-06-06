@@ -30,7 +30,7 @@ private:
     InputHandler inputHandler;
     Renderer renderer;
 
-    Block* currentBlock;
+    shared_ptr<Block> currentBlock;
 
 public:
     GameManager();
