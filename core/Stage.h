@@ -8,11 +8,12 @@ private:
 	int duration;
 	int speed;
 	int successScore;
+	int successCurrency;
 	int minBombScore;
 	int minEnergyCoreScore;
 
 public:
-	Stage(int stageNumber, int currency, int duration, int speed, int successScore, int minBombScore, int minEnergyCoreScore);
+	Stage(int stageNumber, int currency, int duration, int speed, int successScore, int successCurrency, int minBombScore, int minEnergyCoreScore);
 	int getStageNumber() const;
 	int getCurrency() const;
 	int getDuration() const;
