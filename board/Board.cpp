@@ -101,8 +101,11 @@ list<int> Board::checkClearedLines() {
 
     }
 
-    clearLines.sort();
-    clearLines.unique();
+    if (clearLines.size() != 0) {
+        clearLines.sort();
+        clearLines.unique();
+    }
+
 
     return clearLines;
     /*int return_val = clearLines.size();
@@ -123,11 +126,7 @@ list<int> Board::checkClearedLines() {
     //return return_val;
 }
 
-bool Board::setNextBlock(Block* nextBlock, int currTurn) {
-
-
-    //게임메니져가 릴리즈 안할거면 아래 주석 제거 해야함.
-    //delete currentBlock;
+bool Board::setNextBlock(shared_ptr<Block> nextBlock, int currTurn) {
 
     currentBlock = nextBlock;
     this->currTurn = currTurn;
@@ -142,6 +141,7 @@ bool Board::setNextBlock(Block* nextBlock, int currTurn) {
 
         vector<pair<int, int>> temp;
         //터질 블록 후보 선택
+
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLS; j++) {
 
@@ -154,17 +154,19 @@ bool Board::setNextBlock(Block* nextBlock, int currTurn) {
             }
         }
 
-        int cnt = 0;
+        
 
         std::random_device rd;
         std::mt19937 g(rd());
         // 후보들 셔플함.
         shuffle(temp.begin(), temp.end(), g);
-
+        int cnt = 0;
 
         // 최대 3개까지 터지므로 아래 while로 선택.
-        while (cnt < temp.size() || cnt == 3) {
+        while (cnt < (temp.size() < 3 ? temp.size() : 3) ){
+            //std::cout << cnt << " : " << temp.size() << std::endl;
             pair<int, int> A = temp.at(cnt++);
+            
             grid[A.first][A.second].setIsExplosive(true);
         }
 
@@ -203,7 +205,7 @@ void Board::moveBlock(KeyEnum key) {
 }
 
 
-const Brick(&Board::getGrid(Block* block) const)[ROWS][COLS]{
+const Brick(&Board::getGrid(shared_ptr<Block> block) const)[ROWS][COLS]{
     static Brick return_grid[ROWS][COLS];  // static으로 유지
 
     // 원래 grid 복사
@@ -320,7 +322,7 @@ void Board::render() {
     }
 }
 
-Block* Board::getCurrentBlock() const {
+shared_ptr<Block> Board::getCurrentBlock() const {
     /*if (!currentBlock) {
         std::cout << "[DEBUG] getCurrentBlock(): currentBlock is nullptr\n";
     }*/

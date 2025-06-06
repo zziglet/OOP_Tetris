@@ -4,7 +4,12 @@
 #include "Brick.h"
 #include "BrickEnum.h"
 #include "cmath"
+#include "iostream"
+#include "Renderer.h"
+
 #include <random>
+#include <memory>
+
 
 BlockGenerator::BlockGenerator(Stage stage) :
 	minBombScore(stage.getMinBombScore()),
@@ -15,13 +20,17 @@ BlockGenerator::BlockGenerator(Stage stage) :
 	srand(unsigned(time(NULL)));
 }
 
-Block* BlockGenerator::getNextBlock(int currScore)
+shared_ptr<Block> BlockGenerator::getNextBlock(int currScore)
 {
 	int bombRate, energyRate;
 
 	bombRate = (int) pow(10.0,(double) (currScore - lastBombScore) / minBombScore);
 	energyRate = (int) pow(10.0 ,(double) (currScore - lastEnergyCoreScore) / minEnergyCoreScore);
+	
+	//Renderer::gotoXY(500, 500);
+	//std::cout << bombRate << " : " << energyRate << std::endl;
 
+	
 	BrickEnum bricks[]{ 
 		BrickEnum::LBrick, 
 		BrickEnum::RectangleBrick,
@@ -38,14 +47,14 @@ Block* BlockGenerator::getNextBlock(int currScore)
 
 	if (rand() % 100 < energyRate) {
 		lastEnergyCoreScore = currScore;
-		return new Block(BrickEnum::EnergyBrick, startR, startC);
+		return make_shared<Block>(BrickEnum::EnergyBrick, startR, startC);
 	}
 
 	if (rand() % 100 < bombRate) {
 		lastBombScore = currScore;
-		return new Block(BrickEnum::BombBrick, startR, startC);
+		return make_shared<Block>(BrickEnum::BombBrick, startR, startC);
 	}
 
 	BrickEnum randomType = bricks[rand() % (sizeof(bricks) / sizeof(bricks[0]))];
-	return new Block(randomType, startR, startC);
+	return make_shared<Block>(randomType, startR, startC);
 }

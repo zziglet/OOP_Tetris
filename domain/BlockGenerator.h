@@ -3,6 +3,8 @@
 #include "Stage.h"
 #include "Block.h"
 
+#include <memory>
+
 class BlockGenerator {
 private:
 	int lastBombScore;
@@ -12,5 +14,5 @@ private:
 
 public:
 	BlockGenerator(Stage stage);
-	Block* getNextBlock(int currScore);
+	shared_ptr<Block> getNextBlock(int currScore);
 };

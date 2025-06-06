@@ -14,15 +14,14 @@ GameManager::GameManager()
     currentStageIndex(0),
     currentBlock(nullptr),
     turnCount(0),
-    blockGenerator(Stage(1, Constants::STAGE1_CURRENCY, Constants::STAGE1_DURATION, Constants::STAGE1_SPEED, Constants::STAGE1_SUCCESS_SCORE, Constants::BOMB_SCORE_THRESHOLD, Constants::ENERGY_CORE_TURN)) {
+    blockGenerator(Stage(1, Constants::STAGE1_CURRENCY, Constants::STAGE1_DURATION, Constants::STAGE1_SPEED, Constants::STAGE1_SUCCESS_SCORE, Constants::STAGE1_BOMB_SCORE_THRESHOLD, Constants::STAGE1_ENERGY_CORE_THRESHOLD)) {
 
-    stages.emplace_back(1, Constants::STAGE1_CURRENCY, Constants::STAGE1_DURATION, Constants::STAGE1_SPEED, Constants::STAGE1_SUCCESS_SCORE, Constants::BOMB_SCORE_THRESHOLD, Constants::ENERGY_CORE_TURN);
-    stages.emplace_back(2, Constants::STAGE2_CURRENCY, Constants::STAGE2_DURATION, Constants::STAGE2_SPEED, Constants::STAGE2_SUCCESS_SCORE, Constants::BOMB_SCORE_THRESHOLD, Constants::ENERGY_CORE_TURN);
-    stages.emplace_back(3, Constants::STAGE3_CURRENCY, Constants::STAGE3_DURATION, Constants::STAGE3_SPEED, Constants::STAGE3_SUCCESS_SCORE, Constants::BOMB_SCORE_THRESHOLD, Constants::ENERGY_CORE_TURN);
+    stages.emplace_back(1, Constants::STAGE1_CURRENCY, Constants::STAGE1_DURATION, Constants::STAGE1_SPEED, Constants::STAGE1_SUCCESS_SCORE, Constants::STAGE1_BOMB_SCORE_THRESHOLD, Constants::STAGE1_ENERGY_CORE_THRESHOLD);
+    stages.emplace_back(2, Constants::STAGE2_CURRENCY, Constants::STAGE2_DURATION, Constants::STAGE2_SPEED, Constants::STAGE2_SUCCESS_SCORE, Constants::STAGE2_BOMB_SCORE_THRESHOLD, Constants::STAGE2_ENERGY_CORE_THRESHOLD);
+    stages.emplace_back(3, Constants::STAGE3_CURRENCY, Constants::STAGE3_DURATION, Constants::STAGE3_SPEED, Constants::STAGE3_SUCCESS_SCORE, Constants::STAGE3_BOMB_SCORE_THRESHOLD, Constants::STAGE3_ENERGY_CORE_THRESHOLD);
 }
 
 GameManager::~GameManager() {
-    delete currentBlock;
     currentBlock = nullptr;
 }
 
@@ -80,7 +79,6 @@ void GameManager::runStage() {
 
     bool blockJustMerged = false;
     cout << CLEAR_SCREEN;
-    std::cout << "\033[?25l"; // 커서 숨김
     renderer.drawGame(board, scoreManager.getScore(), stage.getSuccessScore(), currentStageIndex + 1, timer.getRemainingTime(), lives);
 
     while (!timer.isTimeUp()) {
@@ -101,7 +99,7 @@ void GameManager::runStage() {
         auto now = std::chrono::steady_clock::now();
         auto elapsedFall = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastFallTime).count();
         if (elapsedFall >= fallInterval) {
-            Block* curr = board.getCurrentBlock();
+            shared_ptr<Block> curr = board.getCurrentBlock();
             if (curr) {
                 Block moved = *curr;
                 moved.r += 1;
@@ -156,12 +154,10 @@ void GameManager::runStage() {
         }
     }
 
-    std::cout << "\033[?25h"; // 커서 표시
-
 }
 
 void GameManager::handleKeyInput(KeyEnum key) {
-    Block* curr = board.getCurrentBlock();
+    shared_ptr<Block> curr = board.getCurrentBlock();
 
     if (!curr) return;  // 블럭이 없는 상태에서 조작하면 무시
 
@@ -176,8 +172,6 @@ void GameManager::handleKeyInput(KeyEnum key) {
         break;
     case KeyEnum::HardDrop:
         while (true) {
-            //khj : 이거 deepcopy 아닐텐데 의도대로 작동하나요?
-            //jjw : 헉 저두몰랐네요.. 잘 작동하긴 합니다.
             Block next = *curr; // 현재 블럭 복사
             next.r += 1;        // 아래로 한 칸 이동 시도
 
@@ -195,7 +189,7 @@ void GameManager::handleKeyInput(KeyEnum key) {
 }
 
 void GameManager::spawnNewBlock() {
-    delete currentBlock;
+    
     currentBlock = blockGenerator.getNextBlock(scoreManager.getScore());
 
     // 중앙 상단 위치 지정
@@ -208,7 +202,6 @@ void GameManager::spawnNewBlock() {
         std::cout << "[DEBUG] canMove 실패: ";
         std::cout << "r=" << currentBlock->r << ", c=" << currentBlock->c << std::endl;
         handleFailure(false);
-        delete currentBlock;
         currentBlock = nullptr;
         return;
     }
@@ -221,8 +214,6 @@ void GameManager::spawnNewBlock() {
     // board가 소유권을 가져감
     board.setNextBlock(currentBlock, turnCount);
 
-    //khj : 그러면 setNextBlock에서 currentBlock이 들어오면 동적할당 릴리즈 하는거 켜야하지 않나요?
-    //jjw : 아 맞아요 소멸자에 넣긴 했는데 여기서 릴리즈해야할까요
     // GameManager는 더 이상 포인터를 유지하지 않음
     // currentBlock = nullptr;
 }
