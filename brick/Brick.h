@@ -13,7 +13,7 @@ public:
     Brick(); //기본 생성자 추가
     Brick(BrickEnum brickType);
     Brick(BrickEnum brickType, bool isExplosive);
-    bool getIsExplosive();
+    bool getIsExplosive() const;
     void setIsExplosive(bool set);
     BrickEnum getBrickType() const;
 };

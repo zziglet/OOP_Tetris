@@ -13,7 +13,7 @@ Brick::Brick(BrickEnum brickType, bool isExplosive) :
 {
 }
 
-bool Brick::getIsExplosive()
+bool Brick::getIsExplosive() const
 {
     return this->isExplosive;
 }

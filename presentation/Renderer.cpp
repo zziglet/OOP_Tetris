@@ -35,8 +35,6 @@ void Renderer::drawSelectStage(int stageIndex, int currency) {
     std::cout << "\n" << YELLOW << "화살표 ← →로 이동, ENTER로 선택" << RESET << std::endl;
 }
 
-
-
 void Renderer::drawGame(const Board& board, int score, int targetScore, int stage, int remainingTime, int lives) {
     std::cout << CURSOR_HOME;
     const auto& grid = board.getGrid(board.getCurrentBlock());
@@ -286,9 +284,142 @@ void Renderer::clearLine(const Board& board, int row)
 
     for (int j = 0; j < Board::COLS; ++j) {
         std::cout << BRIGHT_BLACK << "□ " << RESET;
-        std::this_thread::sleep_for(std::chrono::milliseconds(20)); // 1초 대기
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
     }
     
     std::cout << "\033[?25h";
     gotoXY(10000000, 10000000);
+}
+
+void Renderer::drawBomb(const Board& board, list<pair<int, int>> bomb)
+{
+    std::cout << "\033[?25l"; // 커서 숨김
+    int iterNum = 3; // 깜빡임 몇번 반복할지
+
+    const auto& grid = board.getGrid(board.getCurrentBlock());
+
+    int boardLeft = 3;
+    int boardTop = 5;
+    int infoLeft = Board::COLS * 2 + 15;
+
+    //깜빡거리는 시간 ms
+    int time = 300;
+    for (int roop = 0; roop < iterNum; roop++) {
+        
+        for (auto i : bomb) {
+
+            int row = i.first;
+
+            gotoXY(boardLeft, boardTop + (row - 4));
+
+            for (int j = 0; j < Board::COLS; ++j) {
+                BrickEnum type = grid[row][j].getBrickType();
+
+                if (grid[row][j].getIsExplosive()) {
+                    std::cout << BRIGHT_BLACK << "□ " << RESET;
+                    continue;
+                }
+                else {
+                    switch (type) {
+                    case BrickEnum::EmptyBrick:
+                        std::cout << WHITE << "□ " << RESET;
+                        break;
+                    case BrickEnum::RectangleBrick:
+                        std::cout << BLUE << "■ " << RESET;
+                        break;
+                    case BrickEnum::ReverseLBrick:
+                        std::cout << CYAN << "■ " << RESET;
+                        break;
+                    case BrickEnum::StickBrick:
+                        std::cout << BRIGHT_BLUE << "■ " << RESET;
+                        break;
+                    case BrickEnum::TBrick:
+                        std::cout << MAGENTA << "■ " << RESET;
+                        break;
+                    case BrickEnum::LBrick:
+                        std::cout << BRIGHT_YELLOW << "■ " << RESET;
+                        break;
+                    case BrickEnum::ZBrick:
+                        std::cout << RED << "■ " << RESET;
+                        break;
+                    case BrickEnum::SBrick:
+                        std::cout << GREEN << "■ " << RESET;
+                        break;
+                    case BrickEnum::BombBrick:
+                        std::cout << BRIGHT_RED << "▩ " << RESET;
+                        break;
+                    case BrickEnum::EnergyBrick:
+                        std::cout << BRIGHT_MAGENTA << "▣ " << RESET;
+                        break;
+                    case BrickEnum::WallBrick:
+                        std::cout << BRIGHT_BLACK << "■ " << RESET;
+                        break;
+                    default:
+                        std::cout << "  ";
+                        break;
+                    }
+                }
+            }
+        }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(time));
+
+        for (auto i : bomb) {
+
+            int row = i.first;
+            int col = i.second;
+
+            gotoXY(boardLeft, boardTop + (row - 4));
+
+            for (int j = 0; j < Board::COLS; ++j) {
+                BrickEnum type = grid[row][j].getBrickType();
+
+
+                switch (type) {
+                case BrickEnum::EmptyBrick:
+                    std::cout << WHITE << "□ " << RESET;
+                    break;
+                case BrickEnum::RectangleBrick:
+                    std::cout << BLUE << "■ " << RESET;
+                    break;
+                case BrickEnum::ReverseLBrick:
+                    std::cout << CYAN << "■ " << RESET;
+                    break;
+                case BrickEnum::StickBrick:
+                    std::cout << BRIGHT_BLUE << "■ " << RESET;
+                    break;
+                case BrickEnum::TBrick:
+                    std::cout << MAGENTA << "■ " << RESET;
+                    break;
+                case BrickEnum::LBrick:
+                    std::cout << BRIGHT_YELLOW << "■ " << RESET;
+                    break;
+                case BrickEnum::ZBrick:
+                    std::cout << RED << "■ " << RESET;
+                    break;
+                case BrickEnum::SBrick:
+                    std::cout << GREEN << "■ " << RESET;
+                    break;
+                case BrickEnum::BombBrick:
+                    std::cout << BRIGHT_RED << "▩ " << RESET;
+                    break;
+                case BrickEnum::EnergyBrick:
+                    std::cout << BRIGHT_MAGENTA << "▣ " << RESET;
+                    break;
+                case BrickEnum::WallBrick:
+                    std::cout << BRIGHT_BLACK << "■ " << RESET;
+                    break;
+                default:
+                    std::cout << "  ";
+                    break;
+                }
+                
+            }
+        }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(300));
+
+    }
+
+
 }

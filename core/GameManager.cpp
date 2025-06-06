@@ -126,8 +126,10 @@ void GameManager::runStage() {
         // 블록 병합 처리
         if (blockJustMerged && !board.getCurrentBlock()) {
             auto cleared = board.checkClearedLines();
-            if(cleared.size() > 0)
-                renderer.drawGame(board, scoreManager.getScore(), stage.getSuccessScore(), currentStageIndex + 1, timer.getRemainingTime(), lives);
+            
+            
+            renderer.drawGame(board, scoreManager.getScore(), stage.getSuccessScore(), currentStageIndex + 1, timer.getRemainingTime(), lives);
+
             // 한 줄씩 삭제 기능.
             for (auto i : cleared) {
                 Renderer::clearLine(board,i);
@@ -156,6 +158,7 @@ void GameManager::runStage() {
         if (scoreManager.getScore() < stage.getSuccessScore()) {
             // 타이머 종료 + 스코어 부족 → 실패 처리
             handleFailure(false); // 일반 실패로 처리
+            
         }
         else {
             handleClear(); // 성공
@@ -214,13 +217,15 @@ void GameManager::spawnNewBlock() {
         return;
     }
 
+
     bool exploded = board.setNextBlock(currentBlock, turnCount);
+
     if (exploded) {
         handleFailure(true);  // 폭탄으로 인한 실패
     }
 
     // board가 소유권을 가져감
-    board.setNextBlock(currentBlock, turnCount);
+    //board.setNextBlock(currentBlock, turnCount);
 
     // GameManager는 더 이상 포인터를 유지하지 않음
     // currentBlock = nullptr;
