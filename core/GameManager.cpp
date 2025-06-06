@@ -126,7 +126,15 @@ void GameManager::runStage() {
         // 블록 병합 처리
         if (blockJustMerged && !board.getCurrentBlock()) {
             auto cleared = board.checkClearedLines();
-            board.clearLines(cleared);
+            if(cleared.size() > 0)
+                renderer.drawGame(board, scoreManager.getScore(), stage.getSuccessScore(), currentStageIndex + 1, timer.getRemainingTime(), lives);
+            // 한 줄씩 삭제 기능.
+            for (auto i : cleared) {
+                Renderer::clearLine(board,i);
+                board.clearLine(i);
+                renderer.drawGame(board, scoreManager.getScore(), stage.getSuccessScore(), currentStageIndex + 1, timer.getRemainingTime(), lives);
+            }
+
             int baseScore = static_cast<int>(cleared.size() * Constants::CLEAR_LINES_SCORE);
             int bonus = 0;
 

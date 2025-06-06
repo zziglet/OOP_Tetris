@@ -33,6 +33,7 @@ public:
     void mergeBlock();
     bool canMove(const Block& block) const;
     void clearLines(list<int> clearLines);
+    void clearLine(int row);
     list<int> checkClearedLines();
     bool setNextBlock(shared_ptr<Block> nextBlock, int currTurn);
     void moveBlock(KeyEnum key);

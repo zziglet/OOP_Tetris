@@ -18,4 +18,5 @@ public:
     static void showInsufficientCurrency(int required);
     static void showStageEntryConfirm(int required);
     static void showEnding();
+    static void clearLine(const Board& board, int row);
 };
