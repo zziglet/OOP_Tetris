@@ -18,7 +18,6 @@ BlockGenerator::BlockGenerator(Stage stage) :
 	lastEnergyCoreScore(stage.getMinEnergyCoreScore()),
 	lastBombTurn(-3)
 {
-	//
 	srand(unsigned(time(NULL)));
 }
 
@@ -28,10 +27,6 @@ shared_ptr<Block> BlockGenerator::getNextBlock(int currScore, int currTurn)
 
 	bombRate = (int) pow(10.0,(double) (currScore - lastBombScore) / minBombScore);
 	energyRate = (int) pow(10.0 ,(double) (currScore - lastEnergyCoreScore) / minEnergyCoreScore);
-	
-	//Renderer::gotoXY(500, 500);
-	//std::cout << bombRate << " : " << energyRate << std::endl;
-
 	
 	BrickEnum bricks[]{ 
 		BrickEnum::LBrick, 

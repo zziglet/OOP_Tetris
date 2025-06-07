@@ -24,4 +24,4 @@ file(GLOB_RECURSE SOURCES
 	utils/*.cpp
 )
 
-add_executable(OOP_Tetris ${SOURCES}  "board/KeyEnum.h")
+add_executable(OOP_Tetris ${SOURCES})

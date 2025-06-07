@@ -118,7 +118,6 @@ void GameManager::runStage() {
         auto elapsedRender = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastRenderTime).count();
         if (elapsedRender >= renderDelay) {
             renderer.drawGame(board, scoreManager.getScore(), stage.getSuccessScore(), currentStageIndex + 1, timer.getRemainingTime(), lives);
-            // renderer.drawScoreBar(scoreManager.getScore(), currency, timer.getRemainingTime());
             lastRenderTime = now;
         }
 
@@ -203,8 +202,6 @@ void GameManager::spawnNewBlock() {
     currentBlock->setSpinCnt(0);
 
     if (!board.canMove(*currentBlock)) {
-        std::cout << "[DEBUG] canMove ½ÇÆÐ: ";
-        std::cout << "r=" << currentBlock->r << ", c=" << currentBlock->c << std::endl;
         handleFailure(false);
         currentBlock = nullptr;
         return;

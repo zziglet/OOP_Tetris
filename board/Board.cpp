@@ -38,8 +38,6 @@ void Board::clearLine(int row)
             grid[k][j] = grid[k - 1][j];
         }
     }
-
-
 }
 
 list<int> Board::checkClearedLines() {
@@ -82,22 +80,6 @@ list<int> Board::checkClearedLines() {
 
 
     return clearLines;
-    /*int return_val = clearLines.size();
-
-    while (clearLines.size() != 0) {
-        int now = clearLines.back();
-
-        for (int k = now; k > 0; k--) {
-            for (int j = 0; j < COLS; j++) {
-                grid[k][j] = grid[k - 1][j];
-            }
-        }
-
-        clearLines.pop_back();
-    }*/
-
-
-    //return return_val;
 }
 
 bool Board::setNextBlock(shared_ptr<Block> nextBlock, int currTurn) {
@@ -106,8 +88,6 @@ bool Board::setNextBlock(shared_ptr<Block> nextBlock, int currTurn) {
     this->currTurn = currTurn;
 
     bool bombTriggered = triggerBomb(currTurn);
-
-    //cout << "spinCnt : " <<  currentBlock->getSpinCnt() << endl;
 
     if (currentBlock->getBrickType() == BrickEnum::BombBrick) {
         isBomb = true;
@@ -136,10 +116,7 @@ bool Board::setNextBlock(shared_ptr<Block> nextBlock, int currTurn) {
         int cnt = 0;
 
         while (cnt < (temp.size() < 3 ? temp.size() : 3)){
-            //std::cout << cnt << " : " << temp.size() << std::endl;
             pair<int, int> A = temp.at(cnt++);
-            //std::cout << "A : " << A.first << " : " << A.second << " : " << temp.size() << std::endl;
-            //std::cout << cnt << (temp.size() < 3 ? temp.size() : 3) << std::endl;
             grid[A.first][A.second].setIsExplosive(true);
         }
 
@@ -249,19 +226,7 @@ void Board::mergeBlock() {
             }
         }
     }
-
-    //checkClearedLines();
     currentBlock = nullptr;
-}
-
-void Board::triggerEnergyCore(int startRow, int endRow) {
-
-    for (int i = startRow; i <= endRow; i++) {
-        for (int j = 0; j < COLS; j++) {
-            grid[i][j] = Brick(BrickEnum::EmptyBrick);
-        }
-    }
-
 }
 
 bool Board::triggerBomb(int currTurn) {
@@ -296,10 +261,6 @@ bool Board::triggerBomb(int currTurn) {
 
     if (bombHappened) {
         Renderer::drawBomb(*this, bombList);
-        
-        /*for (auto i : bombList) {
-            std::cout << i.first << " " << i.second << " / ";
-        }*/
     }
 
     for (auto i : bombList) {
@@ -310,18 +271,10 @@ bool Board::triggerBomb(int currTurn) {
 }
 
 shared_ptr<Block> Board::getCurrentBlock() const {
-    /*if (!currentBlock) {
-        std::cout << "[DEBUG] getCurrentBlock(): currentBlock is nullptr\n";
-    }*/
     return currentBlock;
 }
 
 void Board::rotateBlock() {
-    /*if (!currentBlock) {
-        std::cout << "[DEBUG] rotateBlock 실패: currentBlock이 nullptr입니다.\n";
-        return;
-    }*/
-
     int nextSpin = (currentBlock->getSpinCnt() + 1) % 4;
 
     Block rotated = *currentBlock;
@@ -329,9 +282,5 @@ void Board::rotateBlock() {
 
     if (canMove(rotated)) {
         currentBlock->spin();
-    }
-    else {
-        std::cout << "[DEBUG] rotateBlock 실패: 회전 불가능한 위치입니다. "
-            << "r=" << rotated.r << ", c=" << rotated.c << ", nextSpin=" << nextSpin << "\n";
     }
 }
