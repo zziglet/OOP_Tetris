@@ -38,6 +38,12 @@ int Stage::getSuccessScore() const
 	return this->successScore;
 }
 
+int Stage::getSuccessCurrency() const
+{
+	return this->successCurrency;
+}
+
+
 int Stage::getMinBombScore() const
 {
 	return this->minBombScore;

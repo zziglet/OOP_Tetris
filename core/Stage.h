@@ -18,6 +18,7 @@ public:
 	int getCurrency() const;
 	int getDuration() const;
 	int getSpeed() const;
+	int getSuccessCurrency() const;
 	int getSuccessScore() const;
 	int getMinBombScore() const;
 	int getMinEnergyCoreScore() const;
