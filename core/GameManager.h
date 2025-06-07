@@ -17,12 +17,10 @@ private:
     int explosion;
     int currency;
     bool isGameOver;
-
-    int currentStageIndex;
-    std::vector<Stage> stages;
-
     int turnCount;
+    int currentStageIndex;
 
+    std::vector<Stage> stages;
     Timer timer;
     ScoreManager scoreManager;
     Board board;

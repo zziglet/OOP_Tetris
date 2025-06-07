@@ -41,7 +41,6 @@ shared_ptr<Block> BlockGenerator::getNextBlock(int currScore)
 		BrickEnum::ZBrick 
 	};
 
-	// 기본 위치: 중앙 상단 (r=0, c=4)
 	int startR = 0;
 	int startC = 4;
 

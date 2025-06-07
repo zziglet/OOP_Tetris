@@ -20,10 +20,6 @@ public:
     static void showStageEntryConfirm(int required);
     static void showEnding();
 
-
-    // 추가 : 라인 제거하는 기능 수행
     static void clearLine(const Board& board, int row);
-    // 추가 : 폭탄 블록 기능 수행
     static void drawBomb(const Board& board, list<pair<int,int>> bomb);
-
 };

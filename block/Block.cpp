@@ -293,7 +293,7 @@ BrickEnum Block::getBrickType()
 int Block::getSpinCnt() const {
     if (spinCnt < 0 || spinCnt >= 4) {
         std::cerr << "[ERROR] Invalid spinCnt: " << spinCnt << std::endl;
-        return 0; // fallback
+        return 0;
     }
     return spinCnt;
 }

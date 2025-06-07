@@ -11,9 +11,7 @@
 #include "list"
 #include "Renderer.h"
 
-
 using namespace std;
-
 
 Board::Board() {
 
@@ -26,13 +24,9 @@ Board::Board() {
     currentBlock = nullptr;
 }
 
-
-// List로 들어온 라인 제거.
 void Board::clearLines(list<int> clearLines)
 {
-    //필요할 수도? 있어서 일단 적어둠
     int return_val = clearLines.size();
-    //위에 줄부터 제거해야하므로 sort()
     clearLines.sort();
 
 
@@ -41,7 +35,6 @@ void Board::clearLines(list<int> clearLines)
         clearLines.pop_front();
         bool isCheck = false;
 
-        // 폭탄 제거되는 경우, isBomb를 false로 변경
         for (int j = 0; j < COLS; j++) {
             if (grid[now][j].getBrickType() == BrickEnum::BombBrick) {
                 isBomb = false;
@@ -51,15 +44,10 @@ void Board::clearLines(list<int> clearLines)
             }*/
         }
 
-
-        // 에너지 코어 블록이 지우는 라인은 빈 블록이 있으므로 체크 X
-
         /* 혹시 지워야하는 라인에 빈 블록이 있다면 continue
         if (isCheck)
             continue;*/
 
-
-            //라인 제거하고 위에 블록 내리는 작업 시행.
         for (int k = now; k > 0; k--) {
             for (int j = 0; j < COLS; j++) {
                 grid[k][j] = grid[k - 1][j];
@@ -77,7 +65,6 @@ void Board::clearLine(int row)
         }
     }
     
-    //라인 제거하고 위에 블록 내리는 작업 시행.
     for (int k = row; k > 0; k--) {
         for (int j = 0; j < COLS; j++) {
             grid[k][j] = grid[k - 1][j];
@@ -151,7 +138,7 @@ bool Board::setNextBlock(shared_ptr<Block> nextBlock, int currTurn) {
     currentBlock = nextBlock;
     this->currTurn = currTurn;
 
-    bool bombTriggered = triggerBomb(currTurn);  // 폭탄 터졌는지 확인
+    bool bombTriggered = triggerBomb(currTurn);
 
     //cout << "spinCnt : " <<  currentBlock->getSpinCnt() << endl;
 
@@ -160,7 +147,6 @@ bool Board::setNextBlock(shared_ptr<Block> nextBlock, int currTurn) {
         bombTurn = currTurn;
 
         vector<pair<int, int>> temp;
-        //터질 블록 후보 선택
 
         for (int i = 4; i < ROWS; i++) {
             for (int j = 0; j < COLS; j++) {
@@ -178,14 +164,10 @@ bool Board::setNextBlock(shared_ptr<Block> nextBlock, int currTurn) {
 
         std::random_device rd;
         std::mt19937 g(rd());
-        // 후보들 셔플함.
+
         shuffle(temp.begin(), temp.end(), g);
         int cnt = 0;
 
-        //vector ArrayList
-        // 방을 5개를 > 10개 > 20개
-        //
-        // 최대 3개까지 터지므로 아래 while로 선택.
         while (cnt < (temp.size() < 3 ? temp.size() : 3)){
             //std::cout << cnt << " : " << temp.size() << std::endl;
             pair<int, int> A = temp.at(cnt++);
@@ -224,22 +206,20 @@ void Board::moveBlock(KeyEnum key) {
         currentBlock->c = moved.c;
     }
     else if (key == KeyEnum::Down) {
-        mergeBlock();  // 더 이상 아래로 못 내려가면 고정
+        mergeBlock();
     }
 }
 
 
 const Brick(&Board::getGrid(shared_ptr<Block> block) const)[ROWS][COLS]{
-    static Brick return_grid[ROWS][COLS];  // static으로 유지
+    static Brick return_grid[ROWS][COLS];
 
-    // 원래 grid 복사
     for (int i = 0; i < ROWS; i++) {
         for (int j = 0; j < COLS; j++) {
             return_grid[i][j] = grid[i][j];
         }
     }
 
-    // 전달된 block 덧씌우기
     if (block != nullptr) {
         int spin = block->getSpinCnt();
 
@@ -350,7 +330,6 @@ bool Board::triggerBomb(int currTurn) {
     return bombHappened;
 }
 
-//디버그용
 void Board::render() {
     for (int i = 0; i < ROWS; i++) {
         for (int j = 0; j < COLS; j++) {
@@ -375,7 +354,6 @@ void Board::rotateBlock() {
 
     int nextSpin = (currentBlock->getSpinCnt() + 1) % 4;
 
-    // 회전한 블록을 복사하여 검사
     Block rotated = *currentBlock;
     rotated.setSpinCnt(nextSpin);
 
