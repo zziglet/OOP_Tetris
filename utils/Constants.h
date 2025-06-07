@@ -36,9 +36,9 @@ namespace Constants {
     constexpr int INITIAL_LIVES = 3;
 
     // stage별 제한 시간
-    constexpr int STAGE1_DURATION = 120;
-    constexpr int STAGE2_DURATION = 90;
-    constexpr int STAGE3_DURATION = 60;
+    constexpr int STAGE1_DURATION = 200;
+    constexpr int STAGE2_DURATION = 200;
+    constexpr int STAGE3_DURATION = 200;
 
     // stage별 필요 재화
     constexpr int STAGE1_CURRENCY = 0;
@@ -52,8 +52,8 @@ namespace Constants {
 
     // stage별 클리어 스코어 조건
     constexpr int STAGE1_SUCCESS_SCORE = 10000;
-    constexpr int STAGE2_SUCCESS_SCORE = 30000;
-    constexpr int STAGE3_SUCCESS_SCORE = 40000;
+    constexpr int STAGE2_SUCCESS_SCORE = 15000;
+    constexpr int STAGE3_SUCCESS_SCORE = 20000;
 
     // stage별 게임 진행 속도
     constexpr int STAGE1_SPEED = 1000;
@@ -64,12 +64,12 @@ namespace Constants {
     constexpr int CLEAR_LINES_SCORE = 1000;
     constexpr int NEW_BLOCK_SCORE = 300;
 
-    constexpr int STAGE1_BOMB_SCORE_THRESHOLD = 6000;
-    constexpr int STAGE1_ENERGY_CORE_THRESHOLD = 3000;
+    constexpr int STAGE1_BOMB_SCORE_THRESHOLD = 4000;
+    constexpr int STAGE1_ENERGY_CORE_THRESHOLD = 2000;
 
-    constexpr int STAGE2_BOMB_SCORE_THRESHOLD = 5000;
-    constexpr int STAGE2_ENERGY_CORE_THRESHOLD = 5000;
+    constexpr int STAGE2_BOMB_SCORE_THRESHOLD = 3000;
+    constexpr int STAGE2_ENERGY_CORE_THRESHOLD = 3000;
 
-    constexpr int STAGE3_BOMB_SCORE_THRESHOLD = 3000;
-    constexpr int STAGE3_ENERGY_CORE_THRESHOLD = 6000;
+    constexpr int STAGE3_BOMB_SCORE_THRESHOLD = 2000;
+    constexpr int STAGE3_ENERGY_CORE_THRESHOLD = 4000;
 }

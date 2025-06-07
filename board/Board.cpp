@@ -60,7 +60,7 @@ void Board::clearLines(list<int> clearLines)
 void Board::clearLine(int row)
 {
     for (int j = 0; j < COLS; j++) {
-        if (grid[row][j].getBrickType() == BrickEnum::BombBrick) {
+        if (grid[row][j].getBrickType() == BrickEnum::BombBrick && grid[row][j].getIsExplosive()) {
             isBomb = false;
         }
     }
@@ -231,6 +231,7 @@ const Brick(&Board::getGrid(shared_ptr<Block> block) const)[ROWS][COLS]{
 
                     if (0 <= r && r < ROWS && 0 <= c && c < COLS) {
                         return_grid[r][c] = Brick(block->shape[spin][i][j]);
+
                     }
                 }
             }
@@ -274,6 +275,9 @@ void Board::mergeBlock() {
 
                 if (r >= 0 && r < ROWS && c >= 0 && c < COLS) {
                     grid[r][c] = Brick(type);
+                    if (grid[r][c].getBrickType() == BrickEnum::BombBrick) {
+                        grid[r][c].setIsExplosive(true);
+                    }
                 }
             }
         }
@@ -299,20 +303,23 @@ bool Board::triggerBomb(int currTurn) {
     list<pair<int, int>> bombList;
 
     if (currTurn - bombTurn == 4) {
-        if (isBomb) {
-            for (int i = 0; i < ROWS; i++) {
-                for (int j = 0; j < COLS; j++) {
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLS; j++) {
 
-                    if (grid[i][j].getIsExplosive()) {
-                        bombList.push_back({ i,j });
-                        bombCnt++;
-                        bombHappened = true;
-                    }
-
+                if (grid[i][j].getIsExplosive() && grid[i][j].getBrickType() == BrickEnum::BombBrick) {
+                    grid[i][j].setIsExplosive(false);
                 }
+
+                if (isBomb && grid[i][j].getIsExplosive()) {
+                    bombList.push_back({ i,j });
+                    bombCnt++;
+                    bombHappened = true;
+                }
+
+                    
             }
-            isBomb = false;
         }
+        isBomb = false;
     }
 
     if (bombHappened) {
