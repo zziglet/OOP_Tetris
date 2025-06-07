@@ -15,12 +15,14 @@ BlockGenerator::BlockGenerator(Stage stage) :
 	minBombScore(stage.getMinBombScore()),
 	minEnergyCoreScore(stage.getMinEnergyCoreScore()),
 	lastBombScore(stage.getMinBombScore()),
-	lastEnergyCoreScore(stage.getMinEnergyCoreScore())
+	lastEnergyCoreScore(stage.getMinEnergyCoreScore()),
+	lastBombTurn(-3)
 {
+	//
 	srand(unsigned(time(NULL)));
 }
 
-shared_ptr<Block> BlockGenerator::getNextBlock(int currScore)
+shared_ptr<Block> BlockGenerator::getNextBlock(int currScore, int currTurn)
 {
 	int bombRate, energyRate;
 
@@ -49,8 +51,9 @@ shared_ptr<Block> BlockGenerator::getNextBlock(int currScore)
 		return make_shared<Block>(BrickEnum::EnergyBrick, startR, startC);
 	}
 
-	if (rand() % 100 < bombRate) {
+	if (rand() % 100 < bombRate && (currTurn - lastBombTurn > 3)) {
 		lastBombScore = currScore;
+		lastBombTurn = currTurn;
 		return make_shared<Block>(BrickEnum::BombBrick, startR, startC);
 	}
 
