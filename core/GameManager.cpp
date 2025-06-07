@@ -53,6 +53,7 @@ void GameManager::startGame() {
 
         currentStageIndex = selected - 1;
         currency -= requiredCurrency;
+        lives = Constants::INITIAL_LIVES;
 
         runStage();
 
