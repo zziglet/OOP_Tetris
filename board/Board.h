@@ -20,7 +20,7 @@ private:
     int currTurn = 0;
     
     //이제 게임메니져에서 관리해서 필요 없을듯함.
-    int bombCnt = 0;
+    //int bombCnt = 0;
 
 
     //대충 폭탄이 있다는 뜻.
@@ -35,10 +35,10 @@ public:
     Board();
 
     //이제 한 줄씩 지우는 기능 넣어서 필요 없을듯함.
-    void clearLines(list<int> clearLines);
+    //void clearLines(list<int> clearLines);
     
     //이것도 디버그 용이라 제출할때는 지워야하나..?
-    void render();
+    //void render();
 
 
     void mergeBlock();

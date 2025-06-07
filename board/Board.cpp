@@ -24,38 +24,6 @@ Board::Board() {
     currentBlock = nullptr;
 }
 
-void Board::clearLines(list<int> clearLines)
-{
-    int return_val = clearLines.size();
-    clearLines.sort();
-
-
-    while (clearLines.size() != 0) {
-        int now = clearLines.front();
-        clearLines.pop_front();
-        bool isCheck = false;
-
-        for (int j = 0; j < COLS; j++) {
-            if (grid[now][j].getBrickType() == BrickEnum::BombBrick) {
-                isBomb = false;
-            }
-            /*if (grid[now][j].getBrickType() == BrickEnum::EmptyBrick) {
-                isCheck = true;
-            }*/
-        }
-
-        /* 혹시 지워야하는 라인에 빈 블록이 있다면 continue
-        if (isCheck)
-            continue;*/
-
-        for (int k = now; k > 0; k--) {
-            for (int j = 0; j < COLS; j++) {
-                grid[k][j] = grid[k - 1][j];
-            }
-        }
-
-    }
-}
 
 void Board::clearLine(int row)
 {
@@ -73,7 +41,6 @@ void Board::clearLine(int row)
 
 
 }
-
 
 list<int> Board::checkClearedLines() {
 
@@ -310,10 +277,15 @@ bool Board::triggerBomb(int currTurn) {
                     grid[i][j].setIsExplosive(false);
                 }
 
-                if (isBomb && grid[i][j].getIsExplosive()) {
-                    bombList.push_back({ i,j });
-                    bombCnt++;
-                    bombHappened = true;
+                if (grid[i][j].getIsExplosive()) {
+
+                    if (isBomb) {
+                        bombList.push_back({ i,j });
+                        bombHappened = true;
+                    }
+                    else {
+                        grid[i][j].setIsExplosive(false);
+                    }
                 }
 
                     
@@ -335,15 +307,6 @@ bool Board::triggerBomb(int currTurn) {
     }
 
     return bombHappened;
-}
-
-void Board::render() {
-    for (int i = 0; i < ROWS; i++) {
-        for (int j = 0; j < COLS; j++) {
-            std::cout << (grid[i][j].getBrickType() == BrickEnum::EmptyBrick ? 0 : 1) << " ";
-        }
-        std::cout << std::endl;
-    }
 }
 
 shared_ptr<Block> Board::getCurrentBlock() const {
