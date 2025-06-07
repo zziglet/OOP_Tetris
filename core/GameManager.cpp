@@ -62,7 +62,7 @@ void GameManager::startGame() {
 void GameManager::runStage() {
     system("cls");
     Stage& stage = stages[currentStageIndex];
-    board = Board();  // 보드 초기화
+    board = Board();
     scoreManager.reset();
     timer.start(stage.getDuration());
     turnCount = 0;
@@ -70,8 +70,8 @@ void GameManager::runStage() {
     blockGenerator = BlockGenerator(stage);
     spawnNewBlock();
 
-    const int frameDelay = 20; // 입력 감지용 빠른 루프
-    const int renderDelay = 200; // 화면 그리는 간격
+    const int frameDelay = 20;
+    const int renderDelay = 200;
 
     int fallInterval = stage.getSpeed();
     auto lastFallTime = std::chrono::steady_clock::now();
@@ -84,7 +84,6 @@ void GameManager::runStage() {
     while (!timer.isTimeUp() && !isGameOver) {
         timer.update();
 
-        // 키 입력 빠르게 감지
         if (_kbhit()) {
             char ch = _getch();
             KeyEnum key = inputHandler.processInput(ch);
@@ -95,7 +94,6 @@ void GameManager::runStage() {
             }
         }
 
-        // 자동 낙하
         auto now = std::chrono::steady_clock::now();
         auto elapsedFall = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastFallTime).count();
         if (elapsedFall >= fallInterval) {
@@ -115,7 +113,6 @@ void GameManager::runStage() {
             lastFallTime = now;
         }
 
-        // 화면 렌더링은 느리게 (깜빡임 방지)
         auto elapsedRender = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastRenderTime).count();
         if (elapsedRender >= renderDelay) {
             renderer.drawGame(board, scoreManager.getScore(), stage.getSuccessScore(), currentStageIndex + 1, timer.getRemainingTime(), lives);
@@ -123,14 +120,12 @@ void GameManager::runStage() {
             lastRenderTime = now;
         }
 
-        // 블록 병합 처리
         if (blockJustMerged && !board.getCurrentBlock() && !isGameOver) {
             auto cleared = board.checkClearedLines();
             
             
             renderer.drawGame(board, scoreManager.getScore(), stage.getSuccessScore(), currentStageIndex + 1, timer.getRemainingTime(), lives);
 
-            // 한 줄씩 삭제 기능.
             for (auto i : cleared) {
                 Renderer::clearLine(board,i);
                 board.clearLine(i);
@@ -153,15 +148,13 @@ void GameManager::runStage() {
         std::this_thread::sleep_for(std::chrono::milliseconds(frameDelay));
     }
 
-    // 게임 오버가 아닌 경우만 클리어 or 실패 판정
     if (!isGameOver) {
         if (scoreManager.getScore() < stage.getSuccessScore()) {
-            // 타이머 종료 + 스코어 부족 → 실패 처리
-            handleFailure(false); // 일반 실패로 처리
+            handleFailure(false);
             
         }
         else {
-            handleClear(); // 성공
+            handleClear();
         }
     }
 
@@ -170,7 +163,7 @@ void GameManager::runStage() {
 void GameManager::handleKeyInput(KeyEnum key) {
     shared_ptr<Block> curr = board.getCurrentBlock();
 
-    if (!curr) return;  // 블럭이 없는 상태에서 조작하면 무시
+    if (!curr) return;
 
     switch (key) {
     case KeyEnum::Left:
@@ -183,13 +176,13 @@ void GameManager::handleKeyInput(KeyEnum key) {
         break;
     case KeyEnum::HardDrop:
         while (true) {
-            Block next = *curr; // 현재 블럭 복사
-            next.r += 1;        // 아래로 한 칸 이동 시도
+            Block next = *curr;
+            next.r += 1;
 
             if (!board.canMove(next)) break;
 
             board.moveBlock(KeyEnum::Down);
-            curr = board.getCurrentBlock(); // 갱신된 블럭 포인터 확인
+            curr = board.getCurrentBlock();
             if (!curr) break;
         }
         board.mergeBlock();
@@ -203,12 +196,10 @@ void GameManager::spawnNewBlock() {
     
     currentBlock = blockGenerator.getNextBlock(scoreManager.getScore());
 
-    // 중앙 상단 위치 지정
     currentBlock->r = 0;
     currentBlock->c = (Board::COLS - 4) / 2;
     currentBlock->setSpinCnt(0);
 
-    // 유효성 검사 (객체 기반으로 검사)
     if (!board.canMove(*currentBlock)) {
         std::cout << "[DEBUG] canMove 실패: ";
         std::cout << "r=" << currentBlock->r << ", c=" << currentBlock->c << std::endl;
@@ -221,22 +212,16 @@ void GameManager::spawnNewBlock() {
     bool exploded = board.setNextBlock(currentBlock, turnCount);
 
     if (exploded) {
-        handleFailure(true);  // 폭탄으로 인한 실패
+        handleFailure(true);
     }
-
-    // board가 소유권을 가져감
-    //board.setNextBlock(currentBlock, turnCount);
-
-    // GameManager는 더 이상 포인터를 유지하지 않음
-    // currentBlock = nullptr;
 }
 
 
 void GameManager::handleFailure(bool isExplosion) {
-    if (isGameOver) return;  // 이미 게임 오버면 중복 처리 방지
+    if (isGameOver) return;
 
     if (isExplosion) {
-        explosion++;  // 누적 폭발 수 증가
+        explosion++;
 
         if (explosion >= 3) {
             lives = 0;
@@ -245,7 +230,7 @@ void GameManager::handleFailure(bool isExplosion) {
             renderer.showGameOver();
         }
         else {
-            lives--; // 생명도 1 감소
+            lives--;
             if (lives <= 0) {
                 isGameOver = true;
                 renderer.showGameOver();
@@ -253,7 +238,7 @@ void GameManager::handleFailure(bool isExplosion) {
         }
     }
     else {
-        lives = 0; // 천장 닿거나 시간 초과는 즉사
+        lives = 0;
         isGameOver = true;
         renderer.showGameOver();
     }

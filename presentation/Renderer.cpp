@@ -16,18 +16,12 @@ void Renderer::gotoXY(int x, int y) {
 void Renderer::drawSelectStage(int stageIndex, int currency) {
     std::cout << CLEAR_SCREEN << CURSOR_HOME;
     std::cout << BOLD << CYAN << "===== SELECT STAGE =====" << RESET << std::endl;
-
-    // 현재 보유 재화
     std::cout << YELLOW << "보유 재화: " << currency << RESET << "\n\n";
-
-    // 스테이지 번호 출력
     std::cout << "    1     2     3" << std::endl;
 
-    // 선택 화살표
     gotoXY(4 + stageIndex * 6, 4);
     std::cout << "↑" << std::endl;
 
-    // 스테이지 입장 재화 표시
     std::cout << "\n입장 필요 재화: ";
     std::cout << " " << Constants::STAGE1_CURRENCY << "   ";
     std::cout << Constants::STAGE2_CURRENCY << "   ";
@@ -40,7 +34,7 @@ void Renderer::drawGame(const Board& board, int score, int targetScore, int stag
     std::cout << CURSOR_HOME;
     const auto& grid = board.getGrid(board.getCurrentBlock());
 
-    std::cout << "\033[?25l"; // 커서 숨김
+    std::cout << "\033[?25l";
     int boardLeft = 3;
     int boardTop = 5;
     int infoLeft = Board::COLS * 2 + 15;
@@ -130,7 +124,7 @@ void Renderer::drawGame(const Board& board, int score, int targetScore, int stag
     }
 
 
-    std::cout << "\033[?25h"; // 커서 표시
+    std::cout << "\033[?25h";
     gotoXY(10000000, 10000000);
 }
 
@@ -276,7 +270,7 @@ void Renderer::clearLine(const Board& board, int row)
     std::cout << CURSOR_HOME;
     const auto& grid = board.getGrid(board.getCurrentBlock());
 
-    std::cout << "\033[?25l"; // 커서 숨김
+    std::cout << "\033[?25l";
     int boardLeft = 3;
     int boardTop = 5;
     int infoLeft = Board::COLS * 2 + 15;
@@ -298,8 +292,8 @@ void Renderer::clearLine(const Board& board, int row)
 
 void Renderer::drawBomb(const Board& board, list<pair<int, int>> bomb)
 {
-    std::cout << "\033[?25l"; // 커서 숨김
-    int iterNum = 3; // 깜빡임 몇번 반복할지
+    std::cout << "\033[?25l";
+    int iterNum = 3;
 
     const auto& grid = board.getGrid(board.getCurrentBlock());
 
@@ -307,7 +301,6 @@ void Renderer::drawBomb(const Board& board, list<pair<int, int>> bomb)
     int boardTop = 5;
     int infoLeft = Board::COLS * 2 + 15;
 
-    //깜빡거리는 시간 ms
     int time = 300;
     for (int roop = 0; roop < iterNum; roop++) {
         

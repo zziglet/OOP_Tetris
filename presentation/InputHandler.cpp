@@ -29,14 +29,13 @@ int InputHandler::handleStageSelection(int currency) {
         Renderer::drawSelectStage(stageIndex, currency);
         char input = getUserInput();
 
-        // 엔터키로 선택 완료
         if (input == '\r') break;
 
         KeyEnum key = processInput(input);
         if (key == KeyEnum::Right && stageIndex < 2) stageIndex++;
         else if (key == KeyEnum::Left && stageIndex > 0) stageIndex--;
     }
-    return stageIndex + 1; // 1~3 반환
+    return stageIndex + 1;
 }
 
 KeyEnum InputHandler::getKey() {

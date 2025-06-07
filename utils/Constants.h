@@ -60,7 +60,7 @@ namespace Constants {
     constexpr int STAGE2_SPEED = 800;
     constexpr int STAGE3_SPEED = 500;
 
-    // 게임 매니저에서 가지고 있던 변수들..
+    // 게임 매니저 변수
     constexpr int CLEAR_LINES_SCORE = 1000;
     constexpr int NEW_BLOCK_SCORE = 300;
 
