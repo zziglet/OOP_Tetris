@@ -81,7 +81,7 @@ void GameManager::runStage() {
     cout << CLEAR_SCREEN;
     renderer.drawGame(board, scoreManager.getScore(), stage.getSuccessScore(), currentStageIndex + 1, timer.getRemainingTime(), lives);
 
-    while (!timer.isTimeUp()) {
+    while (!timer.isTimeUp() && !isGameOver) {
         timer.update();
 
         // 키 입력 빠르게 감지
@@ -124,7 +124,7 @@ void GameManager::runStage() {
         }
 
         // 블록 병합 처리
-        if (blockJustMerged && !board.getCurrentBlock()) {
+        if (blockJustMerged && !board.getCurrentBlock() && !isGameOver) {
             auto cleared = board.checkClearedLines();
             
             

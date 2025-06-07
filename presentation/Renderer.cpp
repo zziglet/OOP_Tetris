@@ -7,6 +7,7 @@
 #include <vector>
 #include <string>
 #include <iomanip>
+#include <limits>
 
 void Renderer::gotoXY(int x, int y) {
     std::printf("\033[%d;%dH", y + 1, x + 1);
@@ -134,7 +135,7 @@ void Renderer::drawGame(const Board& board, int score, int targetScore, int stag
 }
 
 void Renderer::showStageClear(int stage, int stabilizer, int score) {
-    gotoXY(0, 30);
+    system("cls");
     std::string border = "==============================";
     std::cout << GREEN << border << "\n"
         << "|        STAGE CLEAR        |\n"
@@ -142,17 +143,21 @@ void Renderer::showStageClear(int stage, int stabilizer, int score) {
     std::cout << GREEN << "Stage " << stage + 1 << " Cleared!\n"
         << "You earned stabilizer: +" << stabilizer << RESET << std::endl;
     std::cout << GREEN << "You earned score: +" << score << RESET << std::endl;
-    std::this_thread::sleep_for(std::chrono::seconds(3));
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    std::cout << YELLOW << "\nPress ENTER to continue..." << RESET << std::endl;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::cin.get();
 }
 
 void Renderer::showGameOver() {
-    gotoXY(0, 30);
+    system("cls");
     std::string border = "==============================";
     std::cout << RED << BOLD << border << "\n"
         << "|         GAME OVER         |\n"
         << border << RESET << std::endl;
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     std::cout << YELLOW << "\nPress ENTER to continue..." << RESET << std::endl;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     std::cin.get();
 }
 
