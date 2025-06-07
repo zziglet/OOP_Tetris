@@ -9,6 +9,7 @@
 #include "algorithm"
 #include "random"
 #include "list"
+#include "Renderer.h"
 
 
 using namespace std;
@@ -161,7 +162,7 @@ bool Board::setNextBlock(shared_ptr<Block> nextBlock, int currTurn) {
         vector<pair<int, int>> temp;
         //터질 블록 후보 선택
 
-        for (int i = 0; i < ROWS; i++) {
+        for (int i = 4; i < ROWS; i++) {
             for (int j = 0; j < COLS; j++) {
 
                 BrickEnum now = grid[i][j].getBrickType();
@@ -181,11 +182,15 @@ bool Board::setNextBlock(shared_ptr<Block> nextBlock, int currTurn) {
         shuffle(temp.begin(), temp.end(), g);
         int cnt = 0;
 
+        //vector ArrayList
+        // 방을 5개를 > 10개 > 20개
+        //
         // 최대 3개까지 터지므로 아래 while로 선택.
-        while (cnt < (temp.size() < 3 ? temp.size() : 3) ){
+        while (cnt < (temp.size() < 3 ? temp.size() : 3)){
             //std::cout << cnt << " : " << temp.size() << std::endl;
             pair<int, int> A = temp.at(cnt++);
-            
+            //std::cout << "A : " << A.first << " : " << A.second << " : " << temp.size() << std::endl;
+            //std::cout << cnt << (temp.size() < 3 ? temp.size() : 3) << std::endl;
             grid[A.first][A.second].setIsExplosive(true);
         }
 
@@ -311,13 +316,15 @@ void Board::triggerEnergyCore(int startRow, int endRow) {
 bool Board::triggerBomb(int currTurn) {
     bool bombHappened = false;
 
+    list<pair<int, int>> bombList;
+
     if (currTurn - bombTurn == 4) {
         if (isBomb) {
             for (int i = 0; i < ROWS; i++) {
                 for (int j = 0; j < COLS; j++) {
 
                     if (grid[i][j].getIsExplosive()) {
-                        grid[i][j] = Brick();
+                        bombList.push_back({ i,j });
                         bombCnt++;
                         bombHappened = true;
                     }
@@ -326,8 +333,20 @@ bool Board::triggerBomb(int currTurn) {
             }
             isBomb = false;
         }
-
     }
+
+    if (bombHappened) {
+        Renderer::drawBomb(*this, bombList);
+        
+        /*for (auto i : bombList) {
+            std::cout << i.first << " " << i.second << " / ";
+        }*/
+    }
+
+    for (auto i : bombList) {
+        grid[i.first][i.second] = Brick();
+    }
+
     return bombHappened;
 }
 
