@@ -8,17 +8,18 @@
 
 GameManager::GameManager()
     : lives(Constants::INITIAL_LIVES),
-    currency(0),
-    explosion(0),
-    isGameOver(false),
-    currentStageIndex(0),
-    currentBlock(nullptr),
-    turnCount(0),
-    blockGenerator(Stage(1, Constants::STAGE1_CURRENCY, Constants::STAGE1_DURATION, Constants::STAGE1_SPEED, Constants::STAGE1_SUCCESS_SCORE, Constants::STAGE1_BOMB_SCORE_THRESHOLD, Constants::STAGE1_ENERGY_CORE_THRESHOLD)) {
+      currency(0),
+      explosion(0),
+      isGameOver(false),
+      currentStageIndex(0),
+      currentBlock(nullptr),
+      turnCount(0),
+      blockGenerator(Stage(1, Constants::STAGE1_CURRENCY, Constants::STAGE1_DURATION, Constants::STAGE1_SPEED, Constants::STAGE1_SUCCESS_SCORE, Constants::STAGE1_SUCCESS_CURRENCY, Constants::STAGE1_BOMB_SCORE_THRESHOLD, Constants::STAGE1_ENERGY_CORE_THRESHOLD))
+{
 
-    stages.emplace_back(1, Constants::STAGE1_CURRENCY, Constants::STAGE1_DURATION, Constants::STAGE1_SPEED, Constants::STAGE1_SUCCESS_SCORE, Constants::STAGE1_BOMB_SCORE_THRESHOLD, Constants::STAGE1_ENERGY_CORE_THRESHOLD);
-    stages.emplace_back(2, Constants::STAGE2_CURRENCY, Constants::STAGE2_DURATION, Constants::STAGE2_SPEED, Constants::STAGE2_SUCCESS_SCORE, Constants::STAGE2_BOMB_SCORE_THRESHOLD, Constants::STAGE2_ENERGY_CORE_THRESHOLD);
-    stages.emplace_back(3, Constants::STAGE3_CURRENCY, Constants::STAGE3_DURATION, Constants::STAGE3_SPEED, Constants::STAGE3_SUCCESS_SCORE, Constants::STAGE3_BOMB_SCORE_THRESHOLD, Constants::STAGE3_ENERGY_CORE_THRESHOLD);
+    stages.emplace_back(1, Constants::STAGE1_CURRENCY, Constants::STAGE1_DURATION, Constants::STAGE1_SPEED, Constants::STAGE1_SUCCESS_SCORE, Constants::STAGE1_SUCCESS_CURRENCY, Constants::STAGE1_BOMB_SCORE_THRESHOLD, Constants::STAGE1_ENERGY_CORE_THRESHOLD);
+    stages.emplace_back(2, Constants::STAGE2_CURRENCY, Constants::STAGE2_DURATION, Constants::STAGE2_SPEED, Constants::STAGE2_SUCCESS_SCORE, Constants::STAGE2_SUCCESS_CURRENCY, Constants::STAGE2_BOMB_SCORE_THRESHOLD, Constants::STAGE2_ENERGY_CORE_THRESHOLD);
+    stages.emplace_back(3, Constants::STAGE3_CURRENCY, Constants::STAGE3_DURATION, Constants::STAGE3_SPEED, Constants::STAGE3_SUCCESS_SCORE, Constants::STAGE3_SUCCESS_CURRENCY, Constants::STAGE3_BOMB_SCORE_THRESHOLD, Constants::STAGE3_ENERGY_CORE_THRESHOLD);
 }
 
 GameManager::~GameManager() {
@@ -245,23 +246,12 @@ void GameManager::handleFailure(bool isExplosion) {
 }
 
 void GameManager::handleClear() {
-    int reward = 0;
-    switch (currentStageIndex) {
-    case 0:
-        reward = Constants::STAGE1_SUCCESS_CURRENCY;
-        break;
-    case 1:
-        reward = Constants::STAGE2_SUCCESS_CURRENCY;
-        break;
-    case 2:
-        reward = Constants::STAGE3_SUCCESS_CURRENCY;
-        break;
-    default:
-        reward = 0;
-    }
+    Stage &stage = stages[currentStageIndex];
+    int reward = stage.getSuccessCurrency();
 
     currency += reward;
     renderer.showStageClear(currentStageIndex, reward, scoreManager.getScore());
+
     if (currentStageIndex == static_cast<int>(stages.size()) - 1) {
         renderer.showEnding();
     }
