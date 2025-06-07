@@ -195,7 +195,7 @@ void GameManager::handleKeyInput(KeyEnum key) {
 
 void GameManager::spawnNewBlock() {
     
-    currentBlock = blockGenerator.getNextBlock(scoreManager.getScore());
+    currentBlock = blockGenerator.getNextBlock(scoreManager.getScore(),turnCount);
 
     currentBlock->r = 0;
     currentBlock->c = (Board::COLS - 4) / 2;
